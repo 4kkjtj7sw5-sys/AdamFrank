@@ -1,0 +1,2775 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FocusFlow">
+<meta name="theme-color" content="#4a9eff">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
+<title>FocusFlow – Profesionální soustředění</title>
+<style>
+:root {
+  --bg: #0a0a1a;
+  --bg2: #0f0f2a;
+  --glass: rgba(255,255,255,0.05);
+  --glass-border: rgba(255,255,255,0.1);
+  --text: #e8e8ff;
+  --text-dim: #8888aa;
+  --accent: #4a9eff;
+  --accent2: #7c5cfc;
+  --green: #00e5a0;
+  --red: #ff4d6d;
+  --orange: #ff9f43;
+  --gold: #ffd700;
+  --work-color: #4a9eff;
+  --over-color: #ff6b6b;
+  --personal-color: #00e5a0;
+  --radius: 16px;
+  --shadow: 0 8px 32px rgba(0,0,0,0.4);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --select-bg: #141428;
+  --modal-bg: #141428;
+  --card-bg: rgba(255,255,255,0.05);
+}
+body.light {
+  --bg: #f0f2f8;
+  --bg2: #e4e8f4;
+  --glass: rgba(255,255,255,0.7);
+  --glass-border: rgba(0,0,0,0.1);
+  --text: #1a1a2e;
+  --text-dim: #5566aa;
+  --accent: #2d7ef0;
+  --accent2: #6040e0;
+  --green: #00b87a;
+  --red: #e03060;
+  --orange: #e08020;
+  --gold: #c8a000;
+  --work-color: #2d7ef0;
+  --over-color: #e04040;
+  --personal-color: #00b87a;
+  --shadow: 0 8px 32px rgba(0,0,0,0.15);
+  --select-bg: #ffffff;
+  --modal-bg: #f8f9ff;
+  --card-bg: rgba(255,255,255,0.85);
+}
+body.light #app { background: var(--bg); }
+body.light .card { background: var(--glass); }
+body.light .modal { background: var(--modal-bg); border-color: var(--glass-border); }
+body.light #tab-bar { background: rgba(255,255,255,0.9); }
+body.light .tab { color: #8899bb; }
+body.light #top-bar { border-color: var(--glass-border); }
+body.light .btn-ghost { background: rgba(255,255,255,0.8); border-color: var(--glass-border); color: var(--text); }
+body.light .input { background: rgba(255,255,255,0.9); border-color: rgba(0,0,0,0.15); color: var(--text); }
+body.light select.input { background: #fff; color: var(--text); }
+body.light select.input option { background: #fff; color: var(--text); }
+body.light .task-card { background: rgba(255,255,255,0.8); border-color: rgba(0,0,0,0.1); }
+body.light .achievement { background: rgba(255,255,255,0.8); }
+body.light .eisenhower-quad.q4 { background: rgba(0,0,0,0.04); }
+body.light .hm-cell { background: rgba(0,0,0,0.06); }
+body.light #quick-mode { background: var(--bg); }
+body.light .section-tile { background: rgba(255,255,255,0.8); }
+body.light .chip { background: rgba(255,255,255,0.8); }
+body.light #immersive { background: var(--bg); }
+body.light #countdown-overlay { background: rgba(240,242,248,0.92); }
+body.light #mini-timer { background: rgba(240,242,248,0.95); }
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:16px}
+/* SCROLLABLE CONTAINERS */
+.scroll{overflow-y:auto;-webkit-overflow-scrolling:touch}
+.scroll::-webkit-scrollbar{width:4px}
+.scroll::-webkit-scrollbar-track{background:transparent}
+.scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.15);border-radius:2px}
+
+/* GLASS CARD */
+.card{background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;border-radius:12px;border:none;cursor:pointer;font-size:15px;font-weight:600;transition:all .2s;outline:none}
+.btn:active{transform:scale(0.96)}
+.btn-primary{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;box-shadow:0 4px 20px rgba(74,158,255,0.3)}
+.btn-primary:hover{box-shadow:0 4px 30px rgba(74,158,255,0.5)}
+.btn-ghost{background:var(--glass);border:1px solid var(--glass-border);color:var(--text)}
+.btn-ghost:hover{background:rgba(255,255,255,0.1)}
+.btn-danger{background:rgba(255,77,109,0.2);border:1px solid rgba(255,77,109,0.4);color:var(--red)}
+.btn-success{background:rgba(0,229,160,0.15);border:1px solid rgba(0,229,160,0.3);color:var(--green)}
+.btn-icon{width:44px;height:44px;padding:0;border-radius:12px}
+.btn-xl{padding:18px 32px;font-size:18px;border-radius:16px}
+
+/* INPUTS */
+.input{background:rgba(255,255,255,0.06);border:1px solid var(--glass-border);border-radius:10px;padding:12px 14px;color:var(--text);font-size:15px;width:100%;outline:none;transition:border-color .2s}
+.input:focus{border-color:var(--accent)}
+.input::placeholder{color:var(--text-dim)}
+textarea.input{resize:vertical;min-height:80px}
+select.input{cursor:pointer;background:var(--select-bg,#141428);color:var(--text)}
+select.input option{background:var(--select-bg,#141428);color:var(--text)}
+select.input option:checked{background:var(--accent);color:#fff}
+select.input option:hover{background:var(--select-bg,#1e1e40)}
+label{display:block;font-size:13px;color:var(--text-dim);margin-bottom:6px;font-weight:500}
+
+/* APP LAYOUT */
+#app{display:flex;flex-direction:column;height:100%;padding-top:var(--safe-top)}
+#top-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;flex-shrink:0;border-bottom:1px solid var(--glass-border)}
+#top-bar .logo{font-size:18px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+#content{flex:1;overflow:hidden;position:relative}
+
+/* TABS */
+#tab-bar{display:flex;background:rgba(0,0,0,0.3);border-top:1px solid var(--glass-border);padding-bottom:var(--safe-bottom);flex-shrink:0}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px;cursor:pointer;color:var(--text-dim);font-size:10px;gap:3px;transition:color .2s;border:none;background:transparent}
+.tab svg{width:22px;height:22px}
+.tab.active{color:var(--accent)}
+.tab.active svg{filter:drop-shadow(0 0 6px var(--accent))}
+
+/* VIEWS */
+.view{position:absolute;inset:0;display:none;flex-direction:column}
+.view.active{display:flex}
+
+/* ============ QUICK MODE ============ */
+#quick-mode{position:fixed;inset:0;z-index:100;display:none;flex-direction:column;background:var(--bg);padding:var(--safe-top) 0 var(--safe-bottom) 0}
+#quick-mode.active{display:flex}
+#qm-canvas-wrap{position:absolute;inset:0;pointer-events:none}
+#qm-canvas{width:100%;height:100%}
+#qm-overlay{position:relative;z-index:1;display:flex;flex-direction:column;height:100%;padding:16px}
+
+/* ORBS STATE COLORS */
+.orb-work{--orb-color1:#4a9eff;--orb-color2:#7c5cfc}
+.orb-overtime{--orb-color1:#ff6b6b;--orb-color2:#ff9f43}
+.orb-personal{--orb-color1:#00e5a0;--orb-color2:#4a9eff}
+.orb-break{--orb-color1:#00e5a0;--orb-color2:#00b894}
+.orb-idle{--orb-color1:#444466;--orb-color2:#333355}
+
+/* TIMER DISPLAY */
+#timer-display{text-align:center;line-height:1}
+#timer-time{font-size:clamp(64px,15vw,96px);font-weight:200;letter-spacing:-2px;font-variant-numeric:tabular-nums;background:linear-gradient(135deg,var(--orb-color1,#4a9eff),var(--orb-color2,#7c5cfc));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+#timer-label{font-size:14px;color:var(--text-dim);margin-top:4px;text-transform:uppercase;letter-spacing:2px}
+#timer-progress-ring{position:relative;width:280px;height:280px;margin:0 auto}
+#timer-progress-ring svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+#progress-bg{stroke:rgba(255,255,255,0.05);fill:none}
+#progress-fill{stroke:url(#progGrad);fill:none;stroke-linecap:round;transition:stroke-dashoffset 1s linear}
+#orb-container{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:200px;height:200px}
+#orb-canvas{width:200px;height:200px;border-radius:50%}
+
+/* PROFILE BADGES */
+.profile-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer}
+.profile-badge.work{background:rgba(74,158,255,0.2);border:1px solid rgba(74,158,255,0.4);color:var(--work-color)}
+.profile-badge.overtime{background:rgba(255,107,107,0.2);border:1px solid rgba(255,107,107,0.4);color:var(--over-color)}
+.profile-badge.personal{background:rgba(0,229,160,0.2);border:1px solid rgba(0,229,160,0.3);color:var(--personal-color)}
+
+/* MOOD SELECTOR */
+.mood-grid{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.mood-btn{width:52px;height:52px;border-radius:16px;border:2px solid transparent;background:var(--glass);font-size:24px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center}
+.mood-btn:active{transform:scale(0.9)}
+.mood-btn.selected{border-color:var(--accent);background:rgba(74,158,255,0.2);transform:scale(1.1);box-shadow:0 0 20px rgba(74,158,255,0.4)}
+.chronotype-btn{border:2px solid var(--glass-border);background:var(--glass);color:var(--text);transition:all .2s;border-radius:14px}
+.chronotype-btn.selected{border-color:var(--accent);background:rgba(74,158,255,0.18);box-shadow:0 0 18px rgba(74,158,255,0.35)}
+.chronotype-btn:hover:not(.selected){border-color:rgba(74,158,255,0.4);background:rgba(74,158,255,0.08)}
+
+/* TASK TYPE TOGGLE */
+.task-type-btn{border:2px solid var(--glass-border);background:var(--glass);color:var(--text);transition:all .2s;border-radius:14px}
+.task-type-btn.selected{border-color:var(--accent);background:rgba(74,158,255,0.18);box-shadow:0 0 16px rgba(74,158,255,0.3)}
+
+/* TASK CARD - delete + quick */
+.task-card{position:relative}
+.task-delete-btn{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:rgba(255,80,80,0.15);border:1px solid rgba(255,80,80,0.3);color:#ff5050;border-radius:8px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transition:opacity .2s;font-size:14px;flex-shrink:0}
+.task-card:hover .task-delete-btn,.task-card:focus-within .task-delete-btn{opacity:1}
+@media(max-width:600px){.task-delete-btn{opacity:.7}}
+.quick-task-check{width:22px;height:22px;min-width:22px;border-radius:6px;border:2px solid var(--glass-border);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s;flex-shrink:0}
+.quick-task-check.done{background:var(--green);border-color:var(--green);color:#fff}
+.tag-quick{background:rgba(255,200,0,0.15);color:#ffc800;border:1px solid rgba(255,200,0,0.3);font-size:10px;padding:1px 5px;border-radius:4px}
+.tag-no-stats{background:rgba(150,150,150,0.15);color:#aaa;border:1px solid rgba(150,150,150,0.3);font-size:10px;padding:1px 5px;border-radius:4px}
+.tag-date{background:rgba(74,158,255,0.12);color:var(--accent);border:1px solid rgba(74,158,255,0.3);font-size:10px;padding:1px 5px;border-radius:4px}
+
+/* TASK VIEW TOGGLE */
+.task-view-btn{padding:7px 14px;font-size:13px;border:2px solid var(--glass-border);background:transparent;color:var(--text-dim);border-radius:10px;transition:all .2s;cursor:pointer}
+.task-view-btn.active{border-color:var(--accent);background:rgba(74,158,255,0.15);color:var(--text)}
+
+/* DIARY */
+.diary-date-strip{display:flex;gap:6px;overflow-x:auto;padding:4px 0 8px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.diary-date-strip::-webkit-scrollbar{display:none}
+.diary-day-pill{display:flex;flex-direction:column;align-items:center;min-width:44px;padding:6px 4px;border-radius:12px;cursor:pointer;border:2px solid transparent;background:var(--glass);transition:all .2s;flex-shrink:0}
+.diary-day-pill .dd-name{font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px}
+.diary-day-pill .dd-num{font-size:18px;font-weight:700;color:var(--text)}
+.diary-day-pill .dd-dot{width:5px;height:5px;border-radius:50%;background:transparent;margin-top:2px}
+.diary-day-pill.has-tasks .dd-dot{background:var(--accent)}
+.diary-day-pill.selected{border-color:var(--accent);background:rgba(74,158,255,0.18)}
+.diary-day-pill.today-pill .dd-num{color:var(--accent)}
+.diary-section-label{font-size:11px;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:.8px;margin:12px 0 6px;padding-left:2px}
+.diary-inline-add{display:flex;gap:8px;margin-top:8px}
+.diary-task-row{display:flex;align-items:center;gap:10px;padding:9px 10px;background:var(--glass);border-radius:10px;margin-bottom:6px;border:1px solid var(--glass-border);cursor:pointer;transition:background .15s}
+.diary-task-row:active{background:rgba(74,158,255,0.1)}
+.diary-task-row .dtask-check{width:22px;height:22px;min-width:22px;border-radius:6px;border:2px solid var(--glass-border);background:transparent;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;cursor:pointer}
+.diary-task-row .dtask-check.done-check{background:var(--green);border-color:var(--green);color:#fff}
+.diary-task-row .dtask-title{flex:1;font-size:14px;color:var(--text)}
+.diary-task-row .dtask-title.done-title{text-decoration:line-through;opacity:.5}
+.diary-task-row .dtask-type{font-size:16px}
+
+/* SECTION TILES */
+.section-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+.section-tile{padding:12px;border-radius:12px;background:var(--glass);border:2px solid transparent;cursor:pointer;text-align:center;transition:all .2s;font-size:13px;font-weight:500;color:var(--text)}
+.section-tile:active{transform:scale(0.95)}
+.section-tile.selected{border-color:var(--accent);background:rgba(74,158,255,0.15)}
+.section-tile .tile-icon{font-size:24px;margin-bottom:4px}
+
+/* CONTROL BUTTONS */
+#timer-controls{display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap}
+.ctrl-btn{width:64px;height:64px;border-radius:50%;border:none;cursor:pointer;font-size:20px;transition:all .2s;display:flex;align-items:center;justify-content:center}
+.ctrl-btn:active{transform:scale(0.9)}
+#btn-start{width:80px;height:80px;background:linear-gradient(135deg,var(--accent2),var(--accent));box-shadow:0 8px 32px rgba(74,158,255,0.4);color:#fff;font-size:28px}
+#btn-pause{background:rgba(255,159,67,0.2);border:1px solid rgba(255,159,67,0.4);color:var(--orange)}
+#btn-stop{background:rgba(255,77,109,0.2);border:1px solid rgba(255,77,109,0.4);color:var(--red)}
+#btn-distract{background:rgba(255,255,255,0.08);border:1px solid var(--glass-border);color:var(--text-dim);font-size:14px;width:auto;border-radius:10px;padding:8px 14px;height:auto}
+
+/* COUNTDOWN OVERLAY */
+#countdown-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;flex-direction:column;gap:20px}
+#countdown-overlay.active{display:flex}
+#countdown-number{font-size:120px;font-weight:200;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
+#countdown-text{font-size:20px;color:var(--text-dim);text-align:center;padding:0 32px}
+
+/* BREATHING GUIDE */
+#breathing-guide{display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px;padding:16px}
+#breathing-guide.active{display:flex}
+#breath-circle{width:80px;height:80px;border-radius:50%;border:3px solid var(--green);transition:all 4s ease-in-out;background:rgba(0,229,160,0.1);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--green)}
+#breath-text{font-size:15px;color:var(--text-dim);text-align:center}
+
+/* TOAST NOTIFICATIONS */
+#toast-container{position:fixed;top:calc(var(--safe-top) + 16px);right:16px;z-index:300;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{background:rgba(20,20,40,0.95);border:1px solid var(--glass-border);border-radius:12px;padding:12px 16px;backdrop-filter:blur(20px);font-size:14px;max-width:280px;transform:translateX(120%);transition:transform .3s ease;pointer-events:all}
+.toast.show{transform:translateX(0)}
+.toast.success{border-color:rgba(0,229,160,0.4)}
+.toast.warning{border-color:rgba(255,159,67,0.4)}
+.toast.info{border-color:rgba(74,158,255,0.4)}
+
+/* ============ FULL MODE VIEWS ============ */
+.view-header{padding:16px;border-bottom:1px solid var(--glass-border);flex-shrink:0}
+.view-header h2{font-size:20px;font-weight:700}
+.view-header p{font-size:13px;color:var(--text-dim);margin-top:2px}
+.view-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px}
+.view-body::-webkit-scrollbar{width:4px}
+.view-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px}
+
+/* TASK CARDS */
+.task-card{padding:14px;border-radius:12px;background:var(--glass);border:1px solid var(--glass-border);margin-bottom:10px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.task-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent)}
+.task-card.work::before{background:var(--work-color)}
+.task-card.overtime::before{background:var(--over-color)}
+.task-card.personal::before{background:var(--personal-color)}
+.task-card:active{transform:scale(0.99)}
+.task-card .task-title{font-weight:600;font-size:15px;margin-bottom:4px}
+.task-card .task-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.task-card .task-time{font-size:12px;color:var(--text-dim);display:flex;align-items:center;gap:4px}
+.task-card.active-task{border-color:var(--accent);background:rgba(74,158,255,0.1)}
+.task-card.paused-task{border-color:var(--orange);background:rgba(255,159,67,0.05)}
+
+/* TAGS / BADGES */
+.tag{display:inline-flex;align-items:center;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:600}
+.tag-section{background:rgba(124,92,252,0.2);color:#a88dff;border:1px solid rgba(124,92,252,0.3)}
+.tag-mit{background:rgba(255,215,0,0.15);color:var(--gold);border:1px solid rgba(255,215,0,0.3)}
+.tag-urgent{background:rgba(255,77,109,0.15);color:var(--red);border:1px solid rgba(255,77,109,0.3)}
+.tag-important{background:rgba(255,159,67,0.15);color:var(--orange);border:1px solid rgba(255,159,67,0.3)}
+.tag-shallow{background:rgba(255,255,255,0.08);color:var(--text-dim);border:1px solid var(--glass-border)}
+
+/* STATISTICS */
+.stat-card{padding:16px;border-radius:14px;background:var(--glass);border:1px solid var(--glass-border);text-align:center}
+.stat-value{font-size:28px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat-label{font-size:12px;color:var(--text-dim);margin-top:4px}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.stats-grid.three{grid-template-columns:1fr 1fr 1fr}
+
+/* HEATMAP */
+#heatmap{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.hm-cell{aspect-ratio:1;border-radius:3px;background:rgba(255,255,255,0.04);transition:all .2s;cursor:pointer;position:relative}
+.hm-cell:hover::after{content:attr(data-tip);position:absolute;bottom:120%;left:50%;transform:translateX(-50%);background:rgba(20,20,40,0.95);border:1px solid var(--glass-border);border-radius:8px;padding:6px 10px;font-size:11px;white-space:nowrap;pointer-events:none;z-index:10}
+.hm-cell.l1{background:rgba(74,158,255,0.2)}
+.hm-cell.l2{background:rgba(74,158,255,0.4)}
+.hm-cell.l3{background:rgba(74,158,255,0.65)}
+.hm-cell.l4{background:rgba(74,158,255,0.9)}
+
+/* SECTION CHART BARS */
+.section-bar{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.section-bar-label{font-size:13px;color:var(--text-dim);width:100px;flex-shrink:0;text-overflow:ellipsis;overflow:hidden;white-space:nowrap}
+.section-bar-fill{height:8px;border-radius:4px;background:linear-gradient(90deg,var(--accent2),var(--accent));min-width:4px;transition:width .5s ease}
+.section-bar-time{font-size:12px;color:var(--text-dim);margin-left:auto;flex-shrink:0}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;z-index:150;background:rgba(0,0,0,0.7);display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)}
+.modal-overlay.active{display:flex}
+.modal{background:#141428;border:1px solid var(--glass-border);border-radius:20px 20px 0 0;width:100%;max-width:600px;max-height:90vh;display:flex;flex-direction:column;padding-bottom:var(--safe-bottom)}
+@media(min-width:600px){.modal-overlay{align-items:center}.modal{border-radius:20px;max-height:80vh}}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--glass-border)}
+.modal-header h3{font-size:18px;font-weight:700}
+.modal-body{overflow-y:auto;padding:20px;flex:1}
+.modal-footer{padding:16px 20px;border-top:1px solid var(--glass-border);display:flex;gap:10px}
+
+/* SETTINGS */
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.setting-row:last-child{border-bottom:none}
+.setting-label{font-size:14px;font-weight:500}
+.setting-hint{font-size:12px;color:var(--text-dim);margin-top:2px}
+/* TOGGLE */
+.toggle{position:relative;width:48px;height:28px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:rgba(255,255,255,0.15);border-radius:14px;cursor:pointer;transition:.3s}
+.toggle-slider::before{content:'';position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:.3s}
+.toggle input:checked+.toggle-slider{background:var(--accent)}
+.toggle input:checked+.toggle-slider::before{transform:translateX(20px)}
+
+/* SECTION MANAGER */
+.section-color-dot{width:12px;height:12px;border-radius:50%;display:inline-block;flex-shrink:0}
+
+/* ACHIEVEMENT */
+.achievement{display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;background:var(--glass);border:1px solid var(--glass-border);margin-bottom:8px}
+.achievement-icon{font-size:28px;width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.2);flex-shrink:0}
+.achievement.locked{opacity:0.4;filter:grayscale(1)}
+.achievement-info{flex:1}
+.achievement-name{font-size:14px;font-weight:600}
+.achievement-desc{font-size:12px;color:var(--text-dim)}
+
+/* STREAK */
+.streak-display{text-align:center;padding:20px}
+.streak-number{font-size:64px;font-weight:200;color:var(--gold)}
+.streak-label{font-size:14px;color:var(--text-dim)}
+.streak-rings{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.streak-ring{width:32px;height:32px;border-radius:50%;border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--gold)}
+.streak-ring.filled{background:var(--gold);color:#000;font-weight:700}
+
+/* EISENHOWER */
+.eisenhower-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.eisenhower-quad{border-radius:12px;padding:12px;min-height:80px;cursor:pointer;transition:all .2s}
+.eisenhower-quad:active{transform:scale(0.98)}
+.eisenhower-quad.q1{background:rgba(255,77,109,0.1);border:1px solid rgba(255,77,109,0.3)}
+.eisenhower-quad.q2{background:rgba(255,159,67,0.1);border:1px solid rgba(255,159,67,0.3)}
+.eisenhower-quad.q3{background:rgba(74,158,255,0.1);border:1px solid rgba(74,158,255,0.3)}
+.eisenhower-quad.q4{background:rgba(255,255,255,0.04);border:1px solid var(--glass-border)}
+.eq-title{font-size:12px;font-weight:700;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px}
+.q1 .eq-title{color:var(--red)}
+.q2 .eq-title{color:var(--orange)}
+.q3 .eq-title{color:var(--accent)}
+.q4 .eq-title{color:var(--text-dim)}
+.eq-count{font-size:24px;font-weight:200}
+
+/* VOICE BTN */
+#voice-btn{width:56px;height:56px;border-radius:50%;background:rgba(124,92,252,0.2);border:2px solid rgba(124,92,252,0.4);color:#a88dff;font-size:22px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+#voice-btn.listening{animation:pulse-voice 1s infinite;background:rgba(124,92,252,0.4);border-color:var(--accent2)}
+@keyframes pulse-voice{0%,100%{box-shadow:0 0 0 0 rgba(124,92,252,0.4)}50%{box-shadow:0 0 0 12px rgba(124,92,252,0)}}
+
+/* CAFFEINE */
+.caffeine-timeline{position:relative;padding-left:20px;margin-top:8px}
+.caffeine-dot{position:absolute;left:-5px;top:4px;width:10px;height:10px;border-radius:50%;background:var(--orange)}
+.caffeine-item{margin-bottom:16px;border-left:2px solid rgba(255,159,67,0.3);padding-left:16px;position:relative}
+
+/* WORK-LIFE BALANCE */
+#wlb-chart{position:relative;width:160px;height:160px;margin:0 auto}
+#wlb-canvas{width:160px;height:160px}
+.wlb-legend{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+.wlb-legend-item{display:flex;align-items:center;gap:8px;font-size:13px}
+.wlb-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+/* NIGHT OWL INDICATOR */
+.peak-indicator{padding:10px 14px;border-radius:10px;background:rgba(124,92,252,0.1);border:1px solid rgba(124,92,252,0.3);font-size:13px;display:flex;align-items:center;gap:8px}
+.peak-indicator.active{background:rgba(0,229,160,0.1);border-color:rgba(0,229,160,0.3)}
+
+/* SOUND CONTROLS */
+.sound-control{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.sound-control:last-child{border-bottom:none}
+.sound-name{font-size:14px;flex:1}
+.volume-slider{-webkit-appearance:none;appearance:none;width:80px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;outline:none;cursor:pointer}
+.volume-slider::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--accent);cursor:pointer}
+
+/* FLOATING MINI TIMER */
+#mini-timer{position:fixed;top:calc(var(--safe-top) + 60px);right:16px;z-index:50;background:rgba(10,10,26,0.9);border:1px solid var(--glass-border);border-radius:12px;padding:10px 14px;display:none;cursor:pointer;backdrop-filter:blur(20px);font-size:13px;font-weight:600;gap:8px;align-items:center}
+#mini-timer.visible{display:flex}
+#mini-timer .mini-dot{width:8px;height:8px;border-radius:50%;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+
+/* TOOLTIP HINT */
+.hint{font-size:12px;color:var(--text-dim);padding:8px 12px;background:rgba(255,255,255,0.04);border-radius:8px;border-left:3px solid var(--accent);margin-top:8px;line-height:1.5}
+.hints-enabled .hint{display:block}
+.hints-enabled .hint{display:block}
+body:not(.hints-enabled) .hint{display:none}
+
+/* IMMERSIVE MODE */
+#immersive{position:fixed;inset:0;z-index:80;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center}
+#immersive.active{display:flex}
+#immersive #imm-task{font-size:16px;color:var(--text-dim);margin-bottom:24px;letter-spacing:2px;text-transform:uppercase}
+#immersive #imm-time{font-size:clamp(80px,20vw,120px);font-weight:200;font-variant-numeric:tabular-nums;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+#imm-exit{position:absolute;bottom:calc(var(--safe-bottom) + 20px);font-size:13px;color:var(--text-dim);cursor:pointer;letter-spacing:1px}
+
+/* ANIMATIONS */
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse-paused{0%,100%{border-color:rgba(255,159,67,0.5)}50%{border-color:rgba(255,159,67,1);box-shadow:0 0 16px rgba(255,159,67,0.3)}}
+@keyframes scaleIn{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}
+@keyframes celebration{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
+.animate-in{animation:fadeIn .3s ease forwards}
+.animate-scale{animation:scaleIn .3s ease forwards}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--glass-border);margin:16px 0}
+.section-title{font-size:12px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px}
+
+/* FORM GROUP */
+.form-group{margin-bottom:14px}
+
+/* CHIP GROUP */
+.chip-group{display:flex;gap:6px;flex-wrap:wrap}
+.chip{padding:6px 12px;border-radius:20px;border:1px solid var(--glass-border);background:var(--glass);font-size:13px;cursor:pointer;transition:all .2s;color:var(--text)}
+.chip:active{transform:scale(0.95)}
+.chip.active{background:rgba(74,158,255,0.2);border-color:var(--accent);color:var(--accent)}
+
+/* BREAK RECOMMENDATION */
+#break-recommendation{background:rgba(0,229,160,0.05);border:1px solid rgba(0,229,160,0.2);border-radius:14px;padding:16px;margin:16px}
+#break-recommendation h4{color:var(--green);font-size:15px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+#break-recommendation p{font-size:13px;color:var(--text-dim);line-height:1.6}
+#break-recommendation ul{list-style:none;margin-top:8px}
+#break-recommendation ul li{font-size:13px;color:var(--text-dim);padding:4px 0;display:flex;align-items:flex-start;gap:8px}
+#break-recommendation ul li::before{content:'→';color:var(--green);flex-shrink:0}
+
+/* RESPONSIVE */
+@media(min-width:768px){
+  #app{flex-direction:row}
+  #tab-bar{flex-direction:column;width:72px;border-top:none;border-right:1px solid var(--glass-border);padding-bottom:0}
+  .tab{padding:16px 4px}
+  .tab span{display:none}
+  #content{order:1}
+  #timer-progress-ring{width:320px;height:320px}
+  #orb-container{width:240px;height:240px}
+  #orb-canvas{width:240px;height:240px}
+}
+@media(max-width:380px){
+  #timer-time{font-size:56px}
+  .mood-btn{width:44px;height:44px;font-size:20px}
+}
+</style>
+</head>
+<body class="hints-enabled">
+<div id="app">
+  <!-- TOP BAR -->
+  <div id="top-bar">
+    <span class="logo">⚡ FocusFlow</span>
+    <div style="display:flex;gap:8px;align-items:center">
+      <div id="profile-badge-top" class="profile-badge work" onclick="openModal('modal-profile')" title="Přepnout profil">
+        <span id="profile-icon-top">🔵</span>
+        <span id="profile-name-top">Práce</span>
+      </div>
+      <button class="btn btn-ghost btn-icon" id="theme-btn" onclick="toggleTheme()" title="Světlý / Tmavý režim" style="font-size:18px">☀️</button>
+      <button class="btn btn-ghost btn-icon" onclick="toggleQuickMode()" title="Rychlý mód" id="quick-mode-btn" style="font-size:18px">⚡</button>
+      <button class="btn btn-ghost btn-icon" onclick="toggleImmersive()" title="Imerzivní mód" style="font-size:16px">⛶</button>
+    </div>
+  </div>
+
+  <!-- CONTENT AREA -->
+  <div id="content">
+
+    <!-- ===== VIEW: TIMER ===== -->
+    <div class="view active" id="view-timer">
+      <div class="view-body" style="display:flex;flex-direction:column;gap:16px;align-items:center;padding:16px">
+
+        <!-- Mood selector (pre-session) -->
+        <div id="pre-session-panel" class="card animate-in" style="width:100%;max-width:500px;padding:16px">
+          <div class="section-title">Jak se teď cítíš?</div>
+          <div class="hint">Podle tvé nálady nastavím optimální délku focusových bloků. Věda: mozek potřebuje jiné podmínky při stresu a při klidu.</div>
+          <div class="mood-grid" style="margin-top:12px" id="mood-selector">
+            <button class="mood-btn" data-mood="1" onclick="selectMood(1)" title="Velmi nervózní">😤</button>
+            <button class="mood-btn" data-mood="2" onclick="selectMood(2)" title="Trochu nepohoda">😟</button>
+            <button class="mood-btn" data-mood="3" onclick="selectMood(3)" title="Neutrální">😐</button>
+            <button class="mood-btn" data-mood="4" onclick="selectMood(4)" title="Dobře">🙂</button>
+            <button class="mood-btn" data-mood="5" onclick="selectMood(5)" title="V zóně!">🚀</button>
+          </div>
+          <div id="mood-recommendation" class="hint" style="margin-top:10px;display:none"></div>
+        </div>
+
+        <!-- Pauzovaný úkol banner -->
+        <div id="paused-task-banner" style="display:none;width:100%;max-width:500px;padding:12px 16px;border-radius:12px;background:rgba(255,159,67,0.1);border:2px solid rgba(255,159,67,0.5);animation:pulse-paused 2s infinite">
+          <div style="display:flex;align-items:center;gap:10px">
+            <span style="font-size:20px">⏸</span>
+            <div style="flex:1">
+              <div style="font-size:12px;color:var(--orange);font-weight:700;text-transform:uppercase;letter-spacing:1px">Pauzovaný úkol – nezapomeň se vrátit!</div>
+              <div style="font-size:15px;font-weight:600;margin-top:2px" id="paused-task-name">—</div>
+              <div style="font-size:12px;color:var(--text-dim);margin-top:2px">Odpracováno: <span id="paused-task-time">—</span></div>
+            </div>
+            <button class="btn" onclick="returnToPaused()" style="padding:8px 14px;font-size:13px;background:rgba(255,159,67,0.2);border:1px solid rgba(255,159,67,0.5);color:var(--orange)">Vrátit se</button>
+          </div>
+        </div>
+
+        <!-- Chronotype indicator -->
+        <div id="nightowl-bar" class="peak-indicator" style="width:100%;max-width:500px">
+          <span id="nightowl-emoji">🦉</span> <span id="nightowl-msg">Načítám doporučení...</span>
+        </div>
+
+        <!-- Timer ring -->
+        <div id="timer-progress-ring">
+          <svg viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="progGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#7c5cfc"/>
+                <stop offset="100%" style="stop-color:#4a9eff"/>
+              </linearGradient>
+            </defs>
+            <circle id="progress-bg" cx="140" cy="140" r="128" stroke-width="6"/>
+            <circle id="progress-fill" cx="140" cy="140" r="128" stroke-width="6" stroke-dasharray="804" stroke-dashoffset="804"/>
+          </svg>
+          <div id="orb-container">
+            <canvas id="orb-canvas" width="400" height="400"></canvas>
+          </div>
+        </div>
+
+        <!-- Timer display -->
+        <div id="timer-display">
+          <div id="timer-time">00:00</div>
+          <div id="timer-label">Připraven</div>
+        </div>
+
+        <!-- Current task display -->
+        <div id="current-task-display" class="card animate-in" style="width:100%;max-width:500px;padding:14px;display:none">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="flex:1">
+              <div style="font-size:13px;color:var(--text-dim)" id="ct-section">—</div>
+              <div style="font-size:16px;font-weight:600;margin-top:2px" id="ct-title">—</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-size:11px;color:var(--text-dim)">Bloky</div>
+              <div style="font-size:16px;font-weight:700;color:var(--accent)" id="ct-blocks">0</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap" id="ct-tags"></div>
+        </div>
+
+        <!-- Controls -->
+        <div id="timer-controls">
+          <button class="ctrl-btn" id="btn-pause" onclick="pauseTimer()" style="display:none" title="Pauza / Pokračovat">⏸</button>
+          <button class="ctrl-btn" id="btn-start" onclick="startTimerFlow()" title="Spustit">▶</button>
+          <button class="ctrl-btn" id="btn-stop" onclick="stopTimer()" style="display:none" title="Ukončit úkol">⏹</button>
+        </div>
+
+        <!-- Distract button + timebox -->
+        <div style="display:flex;gap:8px;width:100%;max-width:500px;justify-content:center;flex-wrap:wrap">
+          <button class="btn btn-ghost" id="btn-distract" onclick="logDistraction()" style="display:none">🔔 Vyrušení (V)</button>
+          <div id="timebox-display" style="display:none;font-size:13px;color:var(--text-dim);align-items:center;gap:6px" id="tbdisp">
+            ⏰ Deadline: <span id="timebox-remaining" style="color:var(--orange);font-weight:600">—</span>
+          </div>
+        </div>
+
+        <!-- Break recommendation -->
+        <div id="break-recommendation" style="display:none;width:100%;max-width:500px">
+          <h4>☕ Čas na přestávku!</h4>
+          <p id="break-science"></p>
+          <ul id="break-activities"></ul>
+        </div>
+
+        <!-- 20-20-20 reminder -->
+        <div id="eye-reminder" class="card" style="display:none;width:100%;max-width:500px;padding:12px;border-color:rgba(74,158,255,0.3);text-align:center">
+          <div style="font-size:20px;margin-bottom:4px">👁️</div>
+          <div style="font-size:14px;font-weight:600">Pravidlo 20-20-20</div>
+          <div style="font-size:13px;color:var(--text-dim);margin-top:4px">Podívej se na vzdálený objekt na 20 sekund. Snižuje únavu očí o 60 %.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ===== VIEW: TASKS ===== -->
+    <div class="view" id="view-tasks">
+      <div class="view-header">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <h2>Úkoly</h2>
+            <p>Správa a plánování tvých úkolů</p>
+          </div>
+          <button class="btn btn-primary" onclick="openModal('modal-new-task')" style="padding:10px 16px;font-size:14px">+ Nový</button>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button class="task-view-btn active" id="tv-list" onclick="setTaskView('list')">📋 Úkoly</button>
+          <button class="task-view-btn" id="tv-diary" onclick="setTaskView('diary')">📅 Diář</button>
+        </div>
+      </div>
+
+      <!-- LIST VIEW -->
+      <div class="view-body" id="tasks-list-view">
+        <!-- MIT Section -->
+        <div class="section-title">🎯 Nejdůležitější úkoly dnes (MIT)</div>
+        <div class="hint">Most Important Tasks – max. 3 úkoly které MUSÍŠ dokončit dnes. Věda: focus na méně = více dokončeného.</div>
+        <div id="mit-list" style="margin-bottom:16px"></div>
+
+        <!-- Eisenhower -->
+        <div class="section-title" style="margin-top:4px">⚡ Eisenhowerova matice</div>
+        <div class="hint">Roztřiď úkoly podle důležitosti a urgentnosti. Věda: pomáhá rozhodnout co dělat TEĎ vs delegovat.</div>
+        <div class="eisenhower-grid" style="margin-top:10px" id="eisenhower-grid">
+          <div class="eisenhower-quad q1" onclick="filterByQuad(1)"><div class="eq-title">🔴 Dělej hned</div><div class="eq-count" id="eq1">0</div><div style="font-size:11px;color:var(--text-dim)">Důl. + Urgentní</div></div>
+          <div class="eisenhower-quad q2" onclick="filterByQuad(2)"><div class="eq-title">🟡 Naplánuj</div><div class="eq-count" id="eq2">0</div><div style="font-size:11px;color:var(--text-dim)">Důl. + Neurgentní</div></div>
+          <div class="eisenhower-quad q3" onclick="filterByQuad(3)"><div class="eq-title">🔵 Deleguj</div><div class="eq-count" id="eq3">0</div><div style="font-size:11px;color:var(--text-dim)">Nedůl. + Urgentní</div></div>
+          <div class="eisenhower-quad q4" onclick="filterByQuad(4)"><div class="eq-title">⬜ Eliminuj</div><div class="eq-count" id="eq4">0</div><div style="font-size:11px;color:var(--text-dim)">Nedůl. + Neurgentní</div></div>
+        </div>
+
+        <!-- Filter bar -->
+        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center">
+          <div class="chip-group" id="section-filter-chips"></div>
+          <button class="btn btn-ghost" style="font-size:12px;padding:6px 10px" onclick="filterByQuad(0)">Vše</button>
+        </div>
+
+        <!-- Task list -->
+        <div class="section-title">Všechny úkoly</div>
+        <div id="task-list"></div>
+      </div>
+
+      <!-- DIARY VIEW -->
+      <div class="view-body" id="tasks-diary-view" style="display:none">
+        <!-- Week strip -->
+        <div class="diary-date-strip" id="diary-strip"></div>
+        <!-- Selected day header -->
+        <div id="diary-day-header" style="font-size:15px;font-weight:700;margin-bottom:10px;color:var(--text)"></div>
+        <!-- Quick add for diary -->
+        <div class="diary-inline-add">
+          <input class="input" id="diary-quick-input" placeholder="Rychlý zápis…" style="flex:1;font-size:15px" onkeydown="if(event.key==='Enter')diaryQuickAdd()">
+          <button class="btn" onclick="toggleVoice('diary')" id="voice-btn-diary" style="font-size:18px;padding:0 12px">🎤</button>
+          <button class="btn btn-primary" onclick="diaryQuickAdd()" style="padding:0 14px">+</button>
+        </div>
+        <!-- Task list for selected day -->
+        <div id="diary-task-list" style="margin-top:12px"></div>
+        <!-- Unscheduled tasks -->
+        <div id="diary-unscheduled"></div>
+      </div>
+    </div>
+
+    <!-- ===== VIEW: STATS ===== -->
+    <div class="view" id="view-stats">
+      <div class="view-header"><h2>Statistiky</h2><p>Přehled tvojí produktivity</p></div>
+      <div class="view-body">
+        <!-- Quick stats -->
+        <div class="stats-grid" id="quick-stats">
+          <div class="stat-card"><div class="stat-value" id="stat-today">0h</div><div class="stat-label">Dnes celkem</div></div>
+          <div class="stat-card"><div class="stat-value" id="stat-week">0h</div><div class="stat-label">Tento týden</div></div>
+          <div class="stat-card"><div class="stat-value" id="stat-sessions">0</div><div class="stat-label">Sezení dnes</div></div>
+          <div class="stat-card"><div class="stat-value" id="stat-distractions">0</div><div class="stat-label">Vyrušení dnes</div></div>
+        </div>
+
+        <!-- Streak -->
+        <div class="divider"></div>
+        <div class="section-title">🔥 Streak</div>
+        <div class="streak-display">
+          <div class="streak-number" id="streak-count">0</div>
+          <div class="streak-label">dní v řadě</div>
+          <div class="streak-rings" id="streak-rings"></div>
+        </div>
+
+        <!-- Work-life balance -->
+        <div class="divider"></div>
+        <div class="section-title">⚖️ Work-Life Balance (týden)</div>
+        <div style="text-align:center;margin-bottom:8px">
+          <canvas id="wlb-canvas" width="160" height="160" style="width:160px;height:160px"></canvas>
+        </div>
+        <div class="wlb-legend" id="wlb-legend"></div>
+
+        <!-- Overtime alert -->
+        <div id="overtime-alert" style="display:none;margin-top:12px;padding:12px;border-radius:10px;background:rgba(255,77,109,0.1);border:1px solid rgba(255,77,109,0.3);font-size:13px;color:var(--red)">
+          ⚠️ <span id="overtime-msg"></span>
+        </div>
+
+        <!-- Section breakdown -->
+        <div class="divider"></div>
+        <div class="section-title">📊 Čas podle sekce</div>
+        <div id="section-breakdown"></div>
+
+        <!-- Heatmap -->
+        <div class="divider"></div>
+        <div class="section-title">📅 Aktivita (posledních 28 dní)</div>
+        <div id="heatmap" style="margin-top:8px"></div>
+
+        <!-- Caffeine -->
+        <div class="divider"></div>
+        <div class="section-title">☕ Kofeinový optimalizátor</div>
+        <div class="hint">Kofein dosahuje vrcholu za 45–60 min. Jako sova: nepij kávu po 14:00 – kazí spánek po půlnoci.</div>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center">
+          <button class="btn btn-ghost" style="font-size:13px;padding:8px 14px" onclick="logCaffeine()">+ Zaznamenat kávu</button>
+          <span style="font-size:13px;color:var(--text-dim)" id="caffeine-advice"></span>
+        </div>
+        <div id="caffeine-log" class="caffeine-timeline" style="margin-top:12px"></div>
+
+        <!-- Achievements -->
+        <div class="divider"></div>
+        <div class="section-title">🏅 Úspěchy</div>
+        <div id="achievements-list"></div>
+      </div>
+    </div>
+
+    <!-- ===== VIEW: PLAN ===== -->
+    <div class="view" id="view-plan">
+      <div class="view-header"><h2>Plánování</h2><p>Večerní rituál a ranní příprava</p></div>
+      <div class="view-body">
+        <!-- Morning tasks prepared -->
+        <div class="section-title">🌅 Ranní fronta (připraveno na zítra)</div>
+        <div class="hint">Věda: sepsání úkolů večer uvolní mozek a zlepší kvalitu spánku. Ráno spustíš připravené úkoly jedním kliknutím.</div>
+        <div id="morning-queue" style="margin-bottom:16px"></div>
+        <button class="btn btn-ghost" style="width:100%" onclick="openModal('modal-evening-ritual')">📝 Večerní rituál – připrav zítřek</button>
+
+        <!-- Weekly plan -->
+        <div class="divider"></div>
+        <div class="section-title">📆 Týdenní plánování</div>
+        <div id="weekly-plan-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:8px"></div>
+
+        <!-- Timebox -->
+        <div class="divider"></div>
+        <div class="section-title">⏰ Time Boxing</div>
+        <div class="hint">Nastav tvrdý deadline pro úkol. Aplikace přizpůsobí bloky aby jsi stíhal.</div>
+        <div class="form-group" style="margin-top:10px">
+          <label>Úkol</label>
+          <select class="input" id="timebox-task-select"></select>
+        </div>
+        <div class="form-group">
+          <label>Deadline (čas)</label>
+          <input type="time" class="input" id="timebox-time">
+        </div>
+        <button class="btn btn-primary" style="width:100%" onclick="setTimebox()">Nastavit deadline</button>
+      </div>
+    </div>
+
+    <!-- ===== VIEW: SETTINGS ===== -->
+    <div class="view" id="view-settings">
+      <div class="view-header"><h2>Nastavení</h2><p>Přizpůsob aplikaci sobě</p></div>
+      <div class="view-body">
+        <!-- Quick actions -->
+        <div class="section-title">💾 Data</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
+          <button class="btn btn-ghost" onclick="exportJSON()" style="font-size:13px">📤 Export zálohy</button>
+          <button class="btn btn-ghost" onclick="importJSON()" style="font-size:13px">📥 Import zálohy</button>
+          <button class="btn btn-success" onclick="exportXLS()" style="font-size:13px">📊 Export XLS</button>
+          <button class="btn btn-ghost" onclick="openModal('modal-export-filter')" style="font-size:13px">🔍 Filtrovaný XLS</button>
+        </div>
+        <input type="file" id="import-file" accept=".json" style="display:none" onchange="handleImport(event)">
+
+        <div class="divider"></div>
+        <div class="section-title">🔔 Oznámení & připomínky</div>
+        <div class="setting-row">
+          <div><div class="setting-label">Večerní rituál</div><div class="setting-hint">Upomínka k zápisu úkolů na zítřek</div></div>
+          <input type="time" class="input" id="evening-reminder-time" value="21:00" style="width:110px" onchange="saveSettings()">
+        </div>
+        <div class="setting-row">
+          <div><div class="setting-label">Ranní start</div><div class="setting-hint">Zobrazit připravené úkoly ráno</div></div>
+          <input type="time" class="input" id="morning-reminder-time" value="08:00" style="width:110px" onchange="saveSettings()">
+        </div>
+        <div class="setting-row">
+          <div><div class="setting-label">Hydratace</div><div class="setting-hint">Připomínat pít vodu každých X minut</div></div>
+          <select class="input" id="hydration-interval" style="width:110px" onchange="saveSettings()">
+            <option value="0">Vypnuto</option>
+            <option value="30" selected>30 min</option>
+            <option value="45">45 min</option>
+            <option value="60">60 min</option>
+          </select>
+        </div>
+        <div class="setting-row">
+          <div><div class="setting-label">Pravidlo 20-20-20</div><div class="setting-hint">Ochrana očí každých 20 minut</div></div>
+          <label class="toggle"><input type="checkbox" id="eye-toggle" checked onchange="saveSettings()"><span class="toggle-slider"></span></label>
+        </div>
+        <div class="setting-row">
+          <div><div class="setting-label">Zobrazit nápovědy</div><div class="setting-hint">Vědecké popisky u každé funkce</div></div>
+          <label class="toggle"><input type="checkbox" id="hints-toggle" checked onchange="toggleHints(this)"><span class="toggle-slider"></span></label>
+        </div>
+
+        <div class="divider"></div>
+        <div class="section-title">📂 Sekce úkolů</div>
+        <div class="hint">Vytvoř vlastní kategorie pro filtrování a statistiky. Každá sekce má svoji barvu.</div>
+        <div id="sections-list" style="margin-bottom:10px"></div>
+        <div style="display:flex;gap:8px">
+          <input class="input" id="new-section-name" placeholder="Název sekce" style="flex:1">
+          <input type="color" id="new-section-color" value="#4a9eff" style="width:44px;height:44px;border-radius:10px;border:1px solid var(--glass-border);background:transparent;cursor:pointer;padding:2px">
+          <button class="btn btn-primary btn-icon" onclick="addSection()" style="font-size:18px">+</button>
+        </div>
+
+        <div class="divider"></div>
+        <div class="section-title">🕰️ Chronotyp</div>
+        <div class="setting-row" style="flex-direction:column;align-items:flex-start;gap:10px">
+          <div class="setting-hint">Tvůj přirozený rytmus bdělosti – ovlivňuje doporučení pro soustředění</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn chronotype-btn selected" data-type="owl" onclick="setChronotype('owl')" style="flex:1;min-width:120px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:4px">
+              <span style="font-size:24px">🦉</span>
+              <span style="font-size:13px;font-weight:600">Noční sova</span>
+              <span style="font-size:11px;opacity:.7">Peak večer/noc</span>
+            </button>
+            <button class="btn chronotype-btn" data-type="lark" onclick="setChronotype('lark')" style="flex:1;min-width:120px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:4px">
+              <span style="font-size:24px">🐦</span>
+              <span style="font-size:13px;font-weight:600">Ranní skřivan</span>
+              <span style="font-size:11px;opacity:.7">Peak ráno</span>
+            </button>
+            <button class="btn chronotype-btn" data-type="intermediate" onclick="setChronotype('intermediate')" style="flex:1;min-width:120px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:4px">
+              <span style="font-size:24px">🕊️</span>
+              <span style="font-size:13px;font-weight:600">Střední typ</span>
+              <span style="font-size:11px;opacity:.7">Peak dopoledne–odpoledne</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="section-title">⚙️ Přesčas a pracovní doba</div>
+        <div class="setting-row">
+          <div><div class="setting-label">Pracovní doba od</div><div class="setting-hint">Začátek pracovní doby</div></div>
+          <input type="time" class="input" id="work-start-time" value="08:00" style="width:110px" onchange="saveSettings()">
+        </div>
+        <div class="setting-row">
+          <div><div class="setting-label">Pracovní doba do</div><div class="setting-hint">Po tomto čase = nabídnout přesčas</div></div>
+          <input type="time" class="input" id="work-end-time" value="16:00" style="width:110px" onchange="saveSettings()">
+        </div>
+        <div class="setting-row">
+          <div><div class="setting-label">Limit přesčasů/týden</div><div class="setting-hint">Upozornit při překročení (hodin)</div></div>
+          <input type="number" class="input" id="overtime-limit" value="5" min="1" max="40" style="width:80px" onchange="saveSettings()">
+        </div>
+        <div class="setting-row">
+          <div><div class="setting-label">Hodinová sazba (Kč)</div><div class="setting-hint">Pro výpočet hodnoty přesčasů</div></div>
+          <input type="number" class="input" id="hourly-rate" value="0" min="0" style="width:100px" onchange="saveSettings()">
+        </div>
+
+        <div class="divider"></div>
+        <div class="section-title">ℹ️ O aplikaci</div>
+        <div style="font-size:13px;color:var(--text-dim);line-height:1.7">
+          <b>FocusFlow</b> v1.0 – Profesionální aplikace pro soustředění<br>
+          Všechna data jsou uložena lokálně v prohlížeči (localStorage).<br>
+          Pro přenos mezi zařízeními: Export zálohy → přeposlat JSON → Import zálohy.<br><br>
+          <b>Instalace na iPhone/iPad:</b><br>
+          1. Otevři v Safari<br>
+          2. Sdílet → Přidat na plochu<br>
+          3. Spustí se jako nativní app<br><br>
+          <b>Instalace na PC:</b><br>
+          Otevři v Chrome → ikona instalace v adresním řádku
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end #content -->
+
+  <!-- TAB BAR -->
+  <nav id="tab-bar">
+    <button class="tab active" onclick="switchTab('timer')" id="tab-timer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span>Timer</span>
+    </button>
+    <button class="tab" onclick="switchTab('tasks')" id="tab-tasks">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      <span>Úkoly</span>
+    </button>
+    <button class="tab" onclick="switchTab('stats')" id="tab-stats">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      <span>Statistiky</span>
+    </button>
+    <button class="tab" onclick="switchTab('plan')" id="tab-plan">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <span>Plán</span>
+    </button>
+    <button class="tab" onclick="switchTab('settings')" id="tab-settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <span>Nastavení</span>
+    </button>
+  </nav>
+</div>
+
+<!-- QUICK MODE -->
+<div id="quick-mode" style="display:none;flex-direction:column">
+  <canvas id="qm-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none"></canvas>
+  <div style="position:relative;z-index:1;display:flex;flex-direction:column;height:100%;padding:calc(var(--safe-top) + 16px) 16px calc(var(--safe-bottom) + 16px) 16px;gap:12px">
+    <!-- Quick mode header -->
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:16px;font-weight:700;opacity:0.8">⚡ Rychlý start</span>
+      <button class="btn btn-ghost btn-icon" onclick="toggleQuickMode()" style="font-size:16px">✕</button>
+    </div>
+
+    <!-- Profile quick select -->
+    <div style="display:flex;gap:8px">
+      <button class="btn" id="qm-profile-work" onclick="setProfile('work')" style="flex:1;font-size:13px;padding:10px;background:rgba(74,158,255,0.15);border:2px solid rgba(74,158,255,0.5);color:var(--work-color)">🔵 Práce</button>
+      <button class="btn" id="qm-profile-overtime" onclick="setProfile('overtime')" style="flex:1;font-size:13px;padding:10px;background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.3);color:var(--over-color)">🔴 Přesčas</button>
+      <button class="btn" id="qm-profile-personal" onclick="setProfile('personal')" style="flex:1;font-size:13px;padding:10px;background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.3);color:var(--personal-color)">🟢 Osobní</button>
+    </div>
+
+    <!-- Mood quick -->
+    <div>
+      <div style="font-size:12px;color:var(--text-dim);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Jak se cítíš?</div>
+      <div class="mood-grid">
+        <button class="mood-btn" data-mood="1" onclick="selectMood(1,true)">😤</button>
+        <button class="mood-btn" data-mood="2" onclick="selectMood(2,true)">😟</button>
+        <button class="mood-btn" data-mood="3" onclick="selectMood(3,true)">😐</button>
+        <button class="mood-btn" data-mood="4" onclick="selectMood(4,true)">🙂</button>
+        <button class="mood-btn" data-mood="5" onclick="selectMood(5,true)">🚀</button>
+      </div>
+    </div>
+
+    <!-- Section quick select -->
+    <div>
+      <div style="font-size:12px;color:var(--text-dim);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Sekce</div>
+      <div class="section-grid" id="qm-section-grid"></div>
+    </div>
+
+    <!-- Task name + voice -->
+    <div style="display:flex;gap:8px;align-items:flex-start">
+      <div style="flex:1">
+        <input class="input" id="qm-task-name" placeholder="Název úkolu (nebo diktuj →)" style="margin-bottom:8px">
+        <textarea class="input" id="qm-task-note" placeholder="Poznámka..." rows="2" style="min-height:60px"></textarea>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <button id="voice-btn" onclick="toggleVoice()" title="Hlasové diktování">🎤</button>
+        <button class="btn btn-ghost btn-icon" onclick="document.getElementById('qm-task-note').value=''" style="font-size:14px" title="Vymazat">🗑</button>
+      </div>
+    </div>
+
+    <!-- QM timer display -->
+    <div id="qm-timer-display" style="text-align:center;display:none">
+      <div id="qm-time" style="font-size:64px;font-weight:200;font-variant-numeric:tabular-nums;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent">00:00</div>
+      <div id="qm-label" style="font-size:12px;color:var(--text-dim);text-transform:uppercase;letter-spacing:2px">Připraven</div>
+    </div>
+
+    <!-- Start button -->
+    <div style="display:flex;gap:10px;margin-top:auto">
+      <button class="btn btn-primary btn-xl" id="qm-start-btn" onclick="quickStart()" style="flex:1;font-size:20px">▶ Start</button>
+      <button class="btn btn-ghost" id="qm-pause-btn" onclick="pauseTimer()" style="display:none;padding:18px 20px">⏸</button>
+      <button class="btn btn-danger" id="qm-stop-btn" onclick="stopTimer()" style="display:none;padding:18px 20px">⏹</button>
+    </div>
+  </div>
+</div>
+
+<!-- IMMERSIVE MODE -->
+<div id="immersive">
+  <div id="imm-task">ÚKOL</div>
+  <div id="imm-time">00:00</div>
+  <div style="font-size:13px;color:var(--text-dim);margin-top:8px" id="imm-label">SOUSTŘEDĚNÍ</div>
+  <div id="imm-exit" onclick="toggleImmersive()">ESC – Opustit imerzivní mód</div>
+</div>
+
+<!-- COUNTDOWN OVERLAY -->
+<div id="countdown-overlay">
+  <div id="countdown-number">5</div>
+  <div id="countdown-text">Připrav se na fokus.<br>Zavři rušivé aplikace.</div>
+  <div id="breathing-guide">
+    <div id="breath-circle">Nádech</div>
+    <div id="breath-text">Prodýchni se před startem</div>
+  </div>
+</div>
+
+<!-- MINI TIMER -->
+<div id="mini-timer" onclick="switchTab('timer')">
+  <div class="mini-dot" id="mini-dot" style="background:var(--green)"></div>
+  <span id="mini-time">00:00</span>
+  <span id="mini-task" style="color:var(--text-dim);font-size:11px;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div id="toast-container"></div>
+
+<!-- ===== MODALS ===== -->
+
+<!-- Profile modal -->
+<div class="modal-overlay" id="modal-profile">
+  <div class="modal animate-scale">
+    <div class="modal-header"><h3>Přepnout profil</h3><button class="btn btn-ghost btn-icon" onclick="closeModal('modal-profile')">✕</button></div>
+    <div class="modal-body">
+      <div class="hint" style="margin-bottom:16px">Každý profil má vlastní statistiky a vizuální identitu. Firemní data jsou oddělená od osobních.</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <button class="btn" onclick="setProfile('work');closeModal('modal-profile')" style="justify-content:flex-start;gap:12px;padding:16px;background:rgba(74,158,255,0.1);border:1px solid rgba(74,158,255,0.3)">
+          <span style="font-size:24px">🔵</span><div style="text-align:left"><div style="font-weight:700;color:var(--work-color)">Práce – standardní</div><div style="font-size:12px;color:var(--text-dim)">Po–Pá 8:00–16:00 · Firemní statistiky</div></div>
+        </button>
+        <button class="btn" onclick="setProfile('overtime');closeModal('modal-profile')" style="justify-content:flex-start;gap:12px;padding:16px;background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.3)">
+          <span style="font-size:24px">🔴</span><div style="text-align:left"><div style="font-weight:700;color:var(--over-color)">Práce – přesčas</div><div style="font-size:12px;color:var(--text-dim)">Večer, firemní úkoly mimo pracovní dobu</div></div>
+        </button>
+        <button class="btn" onclick="setProfile('personal');closeModal('modal-profile')" style="justify-content:flex-start;gap:12px;padding:16px;background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.3)">
+          <span style="font-size:24px">🟢</span><div style="text-align:left"><div style="font-weight:700;color:var(--personal-color)">Osobní</div><div style="font-size:12px;color:var(--text-dim)">Domácí projekty · Soukromé statistiky</div></div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- New task modal – mobile-first redesign -->
+<div class="modal-overlay" id="modal-new-task">
+  <div class="modal animate-scale">
+    <div class="modal-header">
+      <h3 id="task-modal-title">Nový úkol</h3>
+      <button class="btn btn-ghost btn-icon" onclick="closeModal('modal-new-task')">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- Name + voice -->
+      <div class="form-group">
+        <div style="display:flex;gap:8px">
+          <input class="input" id="task-name-input" placeholder="Co je potřeba udělat?" style="flex:1;font-size:16px" autocomplete="off">
+          <button id="voice-btn-task" onclick="toggleVoice('task')" class="btn btn-ghost btn-icon" style="font-size:20px;padding:0 12px">🎤</button>
+        </div>
+      </div>
+
+      <!-- Task type: Quick vs Focus -->
+      <div class="form-group">
+        <label style="font-size:12px;color:var(--text-dim);margin-bottom:6px;display:block">Typ úkolu</label>
+        <div style="display:flex;gap:8px">
+          <button id="task-type-quick" class="btn task-type-btn" onclick="selectTaskType('quick')" style="flex:1;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:3px">
+            <span style="font-size:22px">⚡</span>
+            <span style="font-size:13px;font-weight:600">Rychlý</span>
+            <span style="font-size:10px;opacity:.65">pod 5 minut</span>
+          </button>
+          <button id="task-type-focus" class="btn task-type-btn selected" onclick="selectTaskType('focus')" style="flex:1;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:3px">
+            <span style="font-size:22px">🎯</span>
+            <span style="font-size:13px;font-weight:600">Focus</span>
+            <span style="font-size:10px;opacity:.65">timer + flow</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Date + Section -->
+      <div style="display:flex;gap:8px">
+        <div class="form-group" style="flex:1;margin-bottom:10px">
+          <label style="font-size:12px;color:var(--text-dim);margin-bottom:4px;display:block">📅 Datum</label>
+          <input type="date" class="input" id="task-due-date" style="width:100%;font-size:14px">
+        </div>
+        <div class="form-group" style="flex:1;margin-bottom:10px">
+          <label style="font-size:12px;color:var(--text-dim);margin-bottom:4px;display:block">📂 Sekce</label>
+          <select class="input" id="task-section-input" style="font-size:14px"></select>
+        </div>
+      </div>
+
+      <!-- Note -->
+      <div class="form-group">
+        <textarea class="input" id="task-note-input" placeholder="Poznámka, email, kontext…" rows="2" style="font-size:14px;resize:none"></textarea>
+      </div>
+
+      <!-- Include in stats -->
+      <div class="form-group" style="margin-bottom:6px">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px">
+          <input type="checkbox" id="task-include-stats" checked style="width:18px;height:18px;cursor:pointer;accent-color:var(--accent)">
+          <span>📊 Zahrnout do statistik</span>
+        </label>
+      </div>
+
+      <!-- Advanced (collapsible) -->
+      <div>
+        <button class="btn btn-ghost" onclick="toggleAdvanced()" id="advanced-toggle" style="width:100%;font-size:12px;padding:7px;color:var(--text-dim)">⚙️ Pokročilé ▸</button>
+        <div id="advanced-panel" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--glass-border)">
+          <div class="form-group">
+            <label>Priorita (Eisenhower)</label>
+            <div class="chip-group" id="eisenhower-chips">
+              <button class="chip" onclick="selectEisenhower(1,this)" data-q="1">🔴 Dělej hned</button>
+              <button class="chip" onclick="selectEisenhower(2,this)" data-q="2">🟡 Naplánuj</button>
+              <button class="chip" onclick="selectEisenhower(3,this)" data-q="3">🔵 Deleguj</button>
+              <button class="chip" onclick="selectEisenhower(4,this)" data-q="4">⬜ Eliminuj</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Typ práce</label>
+            <div class="chip-group" id="work-type-chips">
+              <button class="chip active" onclick="selectWorkType('deep',this)">🧠 Hluboká práce</button>
+              <button class="chip" onclick="selectWorkType('shallow',this)">📋 Mělká práce</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+              <input type="checkbox" id="task-mit-input" style="width:18px;height:18px;cursor:pointer;accent-color:var(--accent)">
+              🎯 Přidat do MIT (nejdůležitější dnes)
+            </label>
+          </div>
+          <div class="form-group">
+            <label>Odhad času</label>
+            <select class="input" id="task-estimate-input">
+              <option value="0">Bez odhadu</option>
+              <option value="5">5 minut</option>
+              <option value="15">15 minut</option>
+              <option value="25">25 minut (Pomodoro)</option>
+              <option value="30">30 minut</option>
+              <option value="45">45 minut</option>
+              <option value="60">1 hodina</option>
+              <option value="90">1,5 hodiny</option>
+              <option value="120">2 hodiny</option>
+              <option value="180">3 hodiny</option>
+              <option value="240">4 hodiny</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-new-task')" style="flex:1">Zrušit</button>
+      <button class="btn btn-primary" onclick="saveTask()" style="flex:2">💾 Uložit</button>
+    </div>
+  </div>
+</div>
+
+<!-- Evening ritual modal -->
+<div class="modal-overlay" id="modal-evening-ritual">
+  <div class="modal animate-scale">
+    <div class="modal-header"><h3>🌙 Večerní rituál</h3><button class="btn btn-ghost btn-icon" onclick="closeModal('modal-evening-ritual')">✕</button></div>
+    <div class="modal-body">
+      <div class="hint" style="margin-bottom:16px">Věda: mentální uzavření pracovního dne snižuje večerní ruminaci a zlepšuje kvalitu spánku o 20–30 %.</div>
+
+      <div class="section-title">✅ Co jsem dnes dokončil?</div>
+      <textarea class="input" id="evening-done" placeholder="Napiš 3 věci které jsi dnes splnil..." rows="3" style="margin-bottom:16px"></textarea>
+
+      <div class="section-title">🎯 3 MIT na zítřek</div>
+      <input class="input" id="mit-tomorrow-1" placeholder="1. Nejdůležitější úkol" style="margin-bottom:8px">
+      <input class="input" id="mit-tomorrow-2" placeholder="2. Druhý důležitý úkol" style="margin-bottom:8px">
+      <input class="input" id="mit-tomorrow-3" placeholder="3. Třetí důležitý úkol" style="margin-bottom:16px">
+
+      <div class="section-title">⚡ Energie na zítřek (1–5)</div>
+      <div class="mood-grid" style="margin-bottom:16px">
+        <button class="mood-btn" onclick="selectTomorrowEnergy(1,this)">🪫</button>
+        <button class="mood-btn" onclick="selectTomorrowEnergy(2,this)">😴</button>
+        <button class="mood-btn" onclick="selectTomorrowEnergy(3,this)">😐</button>
+        <button class="mood-btn" onclick="selectTomorrowEnergy(4,this)">💪</button>
+        <button class="mood-btn" onclick="selectTomorrowEnergy(5,this)">⚡</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-evening-ritual')" style="flex:1">Zrušit</button>
+      <button class="btn btn-primary" onclick="saveEveningRitual()" style="flex:2">💾 Uložit a zavřít den</button>
+    </div>
+  </div>
+</div>
+
+<!-- Export filter modal -->
+<div class="modal-overlay" id="modal-export-filter">
+  <div class="modal animate-scale">
+    <div class="modal-header"><h3>🔍 Export s filtrem</h3><button class="btn btn-ghost btn-icon" onclick="closeModal('modal-export-filter')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Profil</label>
+        <select class="input" id="exp-profile">
+          <option value="all">Vše</option>
+          <option value="work">Práce (standardní)</option>
+          <option value="overtime">Práce (přesčas)</option>
+          <option value="personal">Osobní</option>
+          <option value="company">Firemní vše (práce + přesčas)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Sekce</label>
+        <select class="input" id="exp-section">
+          <option value="all">Všechny sekce</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Od data</label>
+        <input type="date" class="input" id="exp-from">
+      </div>
+      <div class="form-group">
+        <label>Do data</label>
+        <input type="date" class="input" id="exp-to">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-export-filter')" style="flex:1">Zrušit</button>
+      <button class="btn btn-success" onclick="exportFilteredXLS()" style="flex:2">📊 Exportovat XLS</button>
+    </div>
+  </div>
+</div>
+
+<!-- Task detail modal -->
+<div class="modal-overlay" id="modal-task-detail">
+  <div class="modal animate-scale">
+    <div class="modal-header"><h3 id="detail-title">Detail úkolu</h3><button class="btn btn-ghost btn-icon" onclick="closeModal('modal-task-detail')">✕</button></div>
+    <div class="modal-body" id="modal-task-detail-body"></div>
+    <div class="modal-footer" id="modal-task-detail-footer"></div>
+  </div>
+</div>
+
+
+<script>
+// ============================================================
+// FOCUSFLOW – Profesionální aplikace pro soustředění
+// ============================================================
+
+// ---- STATE ----
+const APP = {
+  profile: 'work',
+  mood: 3,
+  currentTaskId: null,
+  timerMode: 'idle', // idle | focus | break | paused
+  timerRunning: false,
+  timerStartTs: null,
+  timerElapsed: 0,      // ms elapsed in current segment
+  timerTotal: 0,        // ms total for current task session
+  focusDuration: 25*60*1000,
+  breakDuration: 5*60*1000,
+  sessionStartTs: null,
+  sessionBreakMs: 0,
+  distractionCount: 0,
+  completedBlocks: 0,
+  timebox: null,         // { taskId, deadline (HH:MM) }
+  immersive: false,
+  quickMode: false,
+  voiceActive: false,
+  voiceTarget: 'qm',    // 'qm' | 'task'
+  tomorrowEnergy: 3,
+  editingTaskId: null,
+  selectedQuad: 0,
+  selectedSection: null,
+  eisenhowerSelected: 0,
+  workTypeSelected: 'deep',
+  eyeTimer: null,
+  hydrationTimer: null,
+  rafId: null,
+  recognition: null,
+};
+
+// ---- SCIENCE CONFIG ----
+const MOOD_CONFIG = {
+  1: { label:'😤 Velmi nervózní', focus: 10*60*1000, brk: 3*60*1000, blocks: 'Starter úkoly – 10 min. Věda: snižujeme aktivační bariéru. Zeigarnik efekt: stačí začít, mozek pokračuje sám.', breakActivities: ['Hluboký nádech 4–4–4','Napiš jen první větu / krok','Pracuj v kuchyni nebo u okna – změna prostředí pomáhá'] },
+  2: { label:'😟 Trochu nepohoda', focus: 20*60*1000, brk: 5*60*1000, blocks: 'Kratší bloky 20 min. Věda: 2minutové pravidlo – pokud tě napadne dát to na zítřek, udělej to TEĎ.', breakActivities: ['5 dřepů nebo protažení','Vypij sklenici vody','Projdi se po místnosti 2 minuty'] },
+  3: { label:'😐 Neutrální', focus: 25*60*1000, brk: 5*60*1000, blocks: 'Pomodoro 25/5 min. Věda: klasická Pomodoro technika – prokázaná efektivita pro standardní kognitivní práci.', breakActivities: ['Pravidlo 20-20-20 (oči)','Protáhni krk a ramena','Krátká meditace nebo dech'] },
+  4: { label:'🙂 Dobře', focus: 52*60*1000, brk: 17*60*1000, blocks: '52/17 pravidlo (DeskTime studie). Věda: nejproduktivnější lidé pracují 52 min bez přerušení, pak 17 min opravdová pauza.', breakActivities: ['17 min opravdové odpojení – žádný telefon','Kratší procházka venku','Zdravá svačina – mozek spotřebovává 20 % glukózy'] },
+  5: { label:'🚀 V zóně!', focus: 90*60*1000, brk: 20*60*1000, blocks: 'Ultradian blok 90 min. Věda: Peretz Lavie & Kleitman – přirozený cyklus mozku 90 min. Deep work v plném flow stavu.', breakActivities: ['20 min opravdové mentální odpojení','Chůze bez telefonu','Lehké jídlo, hodně vody','Nepřekračuj 2 takové bloky za sebou bez delší přestávky'] }
+};
+
+const CHRONOTYPE_CONFIG = {
+  owl: {
+    emoji: '🦉', label: 'Noční sova',
+    tips: {
+      morning_early: { peak: false, msg: '🌅 Ráno (6–10): Mozek sovy ještě nepracuje naplno. Administrativa a e-maily.' },
+      morning_late:  { peak: false, msg: '☕ Dopoledne (10–12): Mozek se zahřívá. Střední složitost úkolů.' },
+      afternoon:     { peak: false, msg: '🌤 Odpoledne (12–16): Poklid po obědě. Lehčí práce, meetingy.' },
+      evening_early: { peak: false, msg: '🌆 Podvečer (16–18): Přechod. Dokonči rozpracované, připrav se na večer.' },
+      evening:       { peak: true,  msg: '🌙 Večer (18–22): Mozek sovy pracuje naplno! Ideální čas pro deep work.' },
+      night:         { peak: true,  msg: '⭐ Noc (22–01): Vrchol výkonnosti sovy. Deep work a kreativita!' },
+      night_late:    { peak: false, msg: '😴 Po 01:00: Mozek přestává efektivně pracovat. Čas na spánek.' }
+    }
+  },
+  lark: {
+    emoji: '🐦', label: 'Ranní skřivan',
+    tips: {
+      morning_early: { peak: true,  msg: '🌅 Brzy ráno (6–9): Tvůj vrchol! Nejnáročnější deep work a kreativní úkoly.' },
+      morning_late:  { peak: true,  msg: '☀️ Dopoledne (9–12): Stále vysoká výkonnost. Analytické a komplexní úkoly.' },
+      afternoon:     { peak: false, msg: '🌤 Odpoledne (12–15): Přirozený pokles energie po obědě. Lehčí práce a meetingy.' },
+      evening_early: { peak: false, msg: '🌆 Podvečer (15–18): Energie doznívá. Administrativa, e-maily, rutina.' },
+      evening:       { peak: false, msg: '🌙 Večer (18–21): Mozek skřivana odpočívá. Relaxace a příprava na zítřek.' },
+      night:         { peak: false, msg: '🌛 Noc (21+): Čas spát! Skřivani potřebují dřívější spánek pro ranní peak.' },
+      night_late:    { peak: false, msg: '😴 Pozdní noc: Tělo potřebuje regeneraci. Jdi spát – ráno to vynahradíš!' }
+    }
+  },
+  intermediate: {
+    emoji: '🕊️', label: 'Střední typ',
+    tips: {
+      morning_early: { peak: false, msg: '🌅 Brzy ráno (6–9): Zahřívací fáze. Klidnější úkoly a plánování dne.' },
+      morning_late:  { peak: true,  msg: '☀️ Dopoledne (9–12): Výkon roste. Vhodné pro soustředěnou práci.' },
+      afternoon:     { peak: true,  msg: '🌤 Odpoledne (12–16): Druhý vrchol. Analytické i kreativní úkoly.' },
+      evening_early: { peak: false, msg: '🌆 Podvečer (16–18): Energie mírně klesá. Administrativa a e-maily.' },
+      evening:       { peak: false, msg: '🌙 Večer (18–21): Mozek se uklidňuje. Lehčí úkoly nebo odpočinek.' },
+      night:         { peak: false, msg: '🌛 Noc (21–24): Čas na relaxaci a přípravu na spánek.' },
+      night_late:    { peak: false, msg: '😴 Pozdní noc: Přesčas za cenu zítřejšího výkonu. Jdi spát.' }
+    }
+  }
+};
+
+const BREAK_TIPS_BY_DURATION = {
+  short: ['Pravidlo 20-20-20 – podívej se na vzdálený objekt 20 sekund','Protáhni krk: pomalu nakloň hlavu na každou stranu','Vstán od stolu a protáhni záda','Nakloň se dozadu a protáhni hrudník'],
+  medium: ['Projdi se 5 minut – zvyšuje průtok krve do mozku o 15 %','Vypij sklenici vody – mozek je 73 % voda','Udělej 10 dřepů nebo 10 kliků – zvýší dopamin','Vyjdi ven na vzduch – snižuje kortizol'],
+  long: ['Jdi na procházku min. 15 minut bez telefonu','Sněz zdravou svačinu – ořechy, ovoce, proteiny','Lehněte si na 10–20 minut (power nap) – obnovuje pracovní paměť','Udělej 20 minut jógy nebo strečink – věda: zvyšuje BDNF (mozkový protein růstu)']
+};
+
+const ACHIEVEMENTS = [
+  { id:'first_session', icon:'🎯', name:'První sezení', desc:'Dokončil jsi svůj první fokus blok', condition: s => s.length >= 1 },
+  { id:'streak_3',      icon:'🔥', name:'3 dny v řadě', desc:'Pracoval jsi 3 dny po sobě', condition: (s,str) => str >= 3 },
+  { id:'streak_7',      icon:'🏆', name:'Týdenní šampión', desc:'7 dní nepřerušeného streaku', condition: (s,str) => str >= 7 },
+  { id:'deep_work_1',   icon:'🧠', name:'Deep Worker', desc:'Dokončil jsi 90min Ultradian blok', condition: s => s.some(x => x.focusMs >= 85*60*1000) },
+  { id:'total_10h',     icon:'⏱', name:'10 hodin fokus', desc:'Celkem 10 hodin soustředění', condition: s => s.reduce((a,x)=>a+x.focusMs,0) >= 10*60*60*1000 },
+  { id:'total_50h',     icon:'💎', name:'50 hodin fokus', desc:'Celkem 50 hodin soustředění', condition: s => s.reduce((a,x)=>a+x.focusMs,0) >= 50*60*60*1000 },
+  { id:'no_distract',   icon:'🎖', name:'Čisté soustředění', desc:'Sezení bez jediného vyrušení', condition: s => s.some(x => x.distractions === 0 && x.focusMs >= 20*60*1000) },
+  { id:'five_tasks',    icon:'✅', name:'Produktivní den', desc:'5 úkolů dokončeno v jeden den', condition: s => { const today=todayStr(); return s.filter(x=>x.date===today&&x.completed).length>=5; }},
+];
+
+const CELEBS = ['🎉 Skvělá práce!','💪 Výborně!','🚀 Jseš v tom!','⭐ Perfektní fokus!','🏆 Tak se to dělá!','✨ Báječný výkon!','🧠 Mozek pracuje naplno!','🎯 Cíl splněn!'];
+
+// ---- DB ----
+const DB = {
+  get: k => { try { return JSON.parse(localStorage.getItem('ff_'+k)||'null'); } catch(e){ return null; } },
+  set: (k,v) => localStorage.setItem('ff_'+k, JSON.stringify(v)),
+  tasks:    () => DB.get('tasks') || [],
+  sessions: () => DB.get('sessions') || [],
+  sections: () => DB.get('sections') || [
+    { id:'s1', name:'Práce', color:'#4a9eff', icon:'💼' },
+    { id:'s2', name:'Osobní rozvoj', color:'#7c5cfc', icon:'📚' },
+    { id:'s3', name:'Zdraví', color:'#00e5a0', icon:'🏃' },
+    { id:'s4', name:'Finance', color:'#ffd700', icon:'💰' },
+    { id:'s5', name:'Kreativita', color:'#ff9f43', icon:'🎨' },
+  ],
+  settings: () => DB.get('settings') || {},
+  caffeine: () => DB.get('caffeine') || [],
+  morning:  () => DB.get('morning_queue') || [],
+  saveTasks: v => DB.set('tasks', v),
+  saveSessions: v => DB.set('sessions', v),
+  saveSections: v => DB.set('sections', v),
+  saveSettings: v => DB.set('settings', v),
+  saveCaffeine: v => DB.set('caffeine', v),
+  saveMorning: v => DB.set('morning_queue', v),
+};
+
+// ---- HELPERS ----
+function todayStr() { return new Date().toISOString().slice(0,10); }
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+function fmtMs(ms) { if(ms<0)ms=0; const s=Math.floor(ms/1000),m=Math.floor(s/60),h=Math.floor(m/60); return h>0?`${h}:${String(m%60).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`:`${String(m).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`; }
+function fmtMins(ms) { const m=Math.round(ms/60000); if(m<60)return m+'min'; const h=Math.floor(m/60),rm=m%60; return rm>0?`${h}h${rm}m`:`${h}h`; }
+function fmtH(ms) { return (ms/3600000).toFixed(1)+'h'; }
+function currentHour() { return new Date().getHours(); }
+function toast(msg,type='info',dur=3500){const c=document.getElementById('toast-container');const t=document.createElement('div');t.className=`toast ${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>t.classList.add('show'),10);setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),400)},dur);}
+function rand(arr){return arr[Math.floor(Math.random()*arr.length)];}
+function closeAllModals(){document.querySelectorAll('.modal-overlay').forEach(m=>m.classList.remove('active'));}
+
+// ---- SETTINGS ----
+let S = {};
+function loadSettings(){
+  const saved=DB.settings();
+  S = Object.assign({ hints:true, eye:true, hydration:30, eveningTime:'21:00', morningTime:'08:00', workStart:'08:00', workEnd:'16:00', overtimeLimit:5, hourlyRate:0, chronotype:'owl' }, saved);
+  document.getElementById('hints-toggle').checked=S.hints;
+  document.getElementById('eye-toggle').checked=S.eye;
+  document.getElementById('hydration-interval').value=S.hydration;
+  document.getElementById('evening-reminder-time').value=S.eveningTime;
+  document.getElementById('morning-reminder-time').value=S.morningTime;
+  document.getElementById('work-start-time').value=S.workStart;
+  document.getElementById('work-end-time').value=S.workEnd;
+  document.getElementById('overtime-limit').value=S.overtimeLimit;
+  document.getElementById('hourly-rate').value=S.hourlyRate;
+  // Chronotype buttons
+  document.querySelectorAll('.chronotype-btn').forEach(b => b.classList.toggle('selected', b.dataset.type === S.chronotype));
+  if(S.hints) document.body.classList.add('hints-enabled'); else document.body.classList.remove('hints-enabled');
+}
+function saveSettings(){
+  S.hints=document.getElementById('hints-toggle').checked;
+  S.eye=document.getElementById('eye-toggle').checked;
+  S.hydration=+document.getElementById('hydration-interval').value;
+  S.eveningTime=document.getElementById('evening-reminder-time').value;
+  S.morningTime=document.getElementById('morning-reminder-time').value;
+  S.workStart=document.getElementById('work-start-time').value;
+  S.workEnd=document.getElementById('work-end-time').value;
+  S.overtimeLimit=+document.getElementById('overtime-limit').value;
+  S.hourlyRate=+document.getElementById('hourly-rate').value;
+  DB.saveSettings(S);
+  setupReminders();
+}
+function toggleHints(el){ if(el.checked) document.body.classList.add('hints-enabled'); else document.body.classList.remove('hints-enabled'); saveSettings(); }
+
+// ---- PROFILE ----
+function setProfile(p){
+  APP.profile=p;
+  const cfg={ work:{icon:'🔵',name:'Práce',cls:'work'}, overtime:{icon:'🔴',name:'Přesčas',cls:'overtime'}, personal:{icon:'🟢',name:'Osobní',cls:'personal'} };
+  const c=cfg[p];
+  document.getElementById('profile-icon-top').textContent=c.icon;
+  document.getElementById('profile-name-top').textContent=c.name;
+  const badge=document.getElementById('profile-badge-top');
+  badge.className='profile-badge '+c.cls;
+  // Quick mode buttons
+  ['work','overtime','personal'].forEach(x=>{
+    const b=document.getElementById('qm-profile-'+x);
+    if(b) b.style.borderWidth = x===p?'2px':'1px';
+  });
+  updateOrbColors();
+  checkOvertimeOffer();
+}
+
+function checkOvertimeOffer(){
+  if(APP.profile==='work'){
+    const [h,m]=S.workEnd.split(':').map(Number);
+    const now=new Date();
+    if(now.getHours()>h||(now.getHours()===h&&now.getMinutes()>=m)){
+      toast('⏰ Pracovní doba skončila. Přepnout na Přesčas?','warning',6000);
+    }
+  }
+}
+
+// ---- MOOD ----
+function selectMood(m, quick=false){
+  APP.mood=m;
+  const cfg=MOOD_CONFIG[m];
+  APP.focusDuration=cfg.focus;
+  APP.breakDuration=cfg.brk;
+  // Update UI - both mood selectors
+  document.querySelectorAll('.mood-btn').forEach(b=>{
+    b.classList.toggle('selected', +b.dataset.mood===m);
+  });
+  const rec=document.getElementById('mood-recommendation');
+  if(rec){rec.style.display='block';rec.textContent=cfg.blocks;}
+  updateTimerDisplay();
+}
+
+// ---- CHRONOTYPE / FOCUS INDICATOR ----
+function setChronotype(type){
+  S.chronotype = type;
+  DB.saveSettings(S);
+  document.querySelectorAll('.chronotype-btn').forEach(b => b.classList.toggle('selected', b.dataset.type === type));
+  updateNightOwl();
+  toast('Chronotyp nastaven: ' + CHRONOTYPE_CONFIG[type].label,'success');
+}
+
+function updateNightOwl(){
+  const h=currentHour();
+  let key;
+  if(h>=1&&h<6)       key='night_late';
+  else if(h<9)        key='morning_early';
+  else if(h<12)       key='morning_late';
+  else if(h<16)       key='afternoon';
+  else if(h<18)       key='evening_early';
+  else if(h<22)       key='evening';
+  else                key='night';
+  const chrono = CHRONOTYPE_CONFIG[S.chronotype] || CHRONOTYPE_CONFIG.owl;
+  const tip = chrono.tips[key] || chrono.tips['morning_early'];
+  const bar = document.getElementById('nightowl-bar');
+  const emojiEl = document.getElementById('nightowl-emoji');
+  const msg = document.getElementById('nightowl-msg');
+  if(bar && msg){
+    if(emojiEl) emojiEl.textContent = chrono.emoji;
+    msg.textContent = tip.msg;
+    bar.classList.toggle('active', tip.peak);
+  }
+}
+
+// ---- TIMER CORE ----
+function startTimerFlow(){
+  if(!APP.currentTaskId){ openModal('modal-new-task'); return; }
+  if(APP.timerMode==='idle'||APP.timerMode==='paused'){
+    if(APP.timerMode==='idle') showCountdown();
+    else resumeTimer();
+  }
+}
+
+function showCountdown(){
+  const overlay=document.getElementById('countdown-overlay');
+  overlay.classList.add('active');
+  let n=5;
+  document.getElementById('countdown-number').textContent=n;
+  const iv=setInterval(()=>{
+    n--;
+    if(n<=0){ clearInterval(iv); overlay.classList.remove('active'); startFocus(); return; }
+    document.getElementById('countdown-number').textContent=n;
+    AUDIO.playTick();
+  },1000);
+}
+
+function startFocus(){
+  APP.timerMode='focus';
+  APP.timerRunning=true;
+  APP.timerStartTs=Date.now();
+  APP.timerElapsed=0;
+  if(!APP.sessionStartTs) { APP.sessionStartTs=Date.now(); APP.sessionBreakMs=0; APP.distractionCount=0; APP.completedBlocks=0; }
+  updateTimerButtons();
+  updateOrbColors();
+  if(APP.currentTaskId) document.getElementById('current-task-display').style.display='block';
+  if(!APP.rafId) animateTimer();
+  setupEyeTimer();
+  setupHydrationTimer();
+  renderPausedTaskBanner();
+  toast('🎯 Fokus blok spuštěn! '+fmtMs(APP.focusDuration),'success');
+}
+
+function pauseTimer(){
+  if(APP.timerMode==='focus'||APP.timerMode==='break'){
+    APP.timerElapsed += Date.now()-APP.timerStartTs;
+    APP.timerRunning=false;
+    // Zapamatuj pauzovaný úkol
+    APP.pausedTaskId = APP.currentTaskId;
+    APP.pausedElapsed = APP.timerElapsed;
+    APP.timerMode='paused';
+    document.getElementById('btn-pause').textContent='▶';
+    document.getElementById('btn-pause').title='Pokračovat';
+    updateOrbColors();
+    renderPausedTaskBanner();
+    toast('⏸ Úkol pozastaven – můžeš přepnout na jiný','info');
+  } else if(APP.timerMode==='paused'){
+    resumeTimer();
+  }
+}
+
+function resumeTimer(){
+  APP.timerMode=APP.timerElapsed < APP.focusDuration ? 'focus':'break';
+  APP.timerRunning=true;
+  APP.timerStartTs=Date.now();
+  // Pokud se vracíme k pauzovanému úkolu, obnov kontext
+  if(APP.pausedTaskId && APP.pausedTaskId===APP.currentTaskId){
+    APP.pausedTaskId=null; APP.pausedElapsed=0;
+  }
+  document.getElementById('btn-pause').textContent='⏸';
+  document.getElementById('btn-pause').title='Pauza';
+  updateOrbColors();
+  if(!APP.rafId) animateTimer();
+  renderPausedTaskBanner();
+  toast('▶ Pokračuji...','info');
+}
+
+function stopTimer(){
+  if(APP.timerMode==='idle') return;
+  if(APP.timerRunning){ APP.timerElapsed+=Date.now()-APP.timerStartTs; }
+  saveSession();
+  APP.timerMode='idle';
+  APP.timerRunning=false;
+  APP.timerStartTs=null;
+  APP.timerElapsed=0;
+  APP.timerTotal=0;
+  APP.sessionStartTs=null;
+  APP.completedBlocks=0;
+  APP.distractionCount=0;
+  cancelAnimationFrame(APP.rafId); APP.rafId=null;
+  APP.pausedTaskId=null; APP.pausedElapsed=0;
+  clearEyeTimer(); clearHydrationTimer();
+  renderPausedTaskBanner();
+  updateTimerDisplay();
+  updateTimerButtons();
+  updateOrbColors();
+  document.getElementById('break-recommendation').style.display='none';
+  document.getElementById('current-task-display').style.display='none';
+  renderStats(); renderTasks();
+  const celeb=rand(CELEBS);
+  toast(celeb+' Úkol uložen.','success',4000);
+}
+
+function animateTimer(){
+  APP.rafId=requestAnimationFrame(()=>{
+    if(!APP.timerRunning){APP.rafId=null;return;}
+    const now=Date.now();
+    const seg=now-APP.timerStartTs;
+    const total=APP.timerElapsed+seg;
+    const target=APP.timerMode==='focus'?APP.focusDuration:APP.breakDuration;
+    const remaining=target-total;
+
+    if(remaining<=0){
+      if(APP.timerMode==='focus'){
+        APP.completedBlocks++;
+        APP.timerElapsed=0; APP.timerStartTs=Date.now();
+        APP.timerMode='break';
+        updateOrbColors();
+        AUDIO.playNotification();
+        showBreakRecommendation();
+        toast('⏰ Fokus blok dokončen! Čas na přestávku.','success');
+      } else {
+        APP.timerElapsed=0; APP.timerStartTs=Date.now();
+        APP.timerMode='focus';
+        updateOrbColors();
+        AUDIO.playNotification();
+        document.getElementById('break-recommendation').style.display='none';
+        toast('🎯 Přestávka skončila! Nový fokus blok.','info');
+      }
+    }
+
+    const disp=remaining>0?remaining:0;
+    const timeStr=fmtMs(disp);
+    document.getElementById('timer-time').textContent=timeStr;
+    document.getElementById('timer-label').textContent=APP.timerMode==='focus'?'SOUSTŘEDĚNÍ':'PŘESTÁVKA';
+
+    // progress ring
+    const pct=Math.max(0,1-(disp/target));
+    const circ=2*Math.PI*128;
+    document.getElementById('progress-fill').style.strokeDashoffset=circ*(1-pct);
+
+    // Quick mode time
+    document.getElementById('qm-time').textContent=timeStr;
+    document.getElementById('qm-label').textContent=APP.timerMode==='focus'?'SOUSTŘEDĚNÍ':'PŘESTÁVKA';
+
+    // Immersive
+    document.getElementById('imm-time').textContent=timeStr;
+    document.getElementById('imm-label').textContent=APP.timerMode==='focus'?'SOUSTŘEDĚNÍ':'PŘESTÁVKA';
+
+    // Mini timer
+    document.getElementById('mini-time').textContent=timeStr;
+    const miniDot=document.getElementById('mini-dot');
+    miniDot.style.background=APP.timerMode==='focus'?'var(--accent)':'var(--green)';
+
+    // Timebox check
+    checkTimebox();
+
+    // Orb pulse
+    ORB.pulse(pct, APP.timerMode);
+
+    animateTimer();
+  });
+}
+
+function updateTimerDisplay(){
+  document.getElementById('timer-time').textContent=fmtMs(APP.focusDuration);
+  document.getElementById('timer-label').textContent='PŘIPRAVEN';
+}
+
+function updateTimerButtons(){
+  const running=APP.timerMode!=='idle';
+  document.getElementById('btn-start').style.display=running?'none':'flex';
+  document.getElementById('btn-pause').style.display=running?'flex':'none';
+  document.getElementById('btn-stop').style.display=running?'flex':'none';
+  document.getElementById('btn-distract').style.display=running&&APP.timerMode==='focus'?'flex':'none';
+  const mini=document.getElementById('mini-timer');
+  if(running) mini.classList.add('visible'); else mini.classList.remove('visible');
+  // Quick mode
+  document.getElementById('qm-start-btn').style.display=running?'none':'flex';
+  document.getElementById('qm-pause-btn').style.display=running?'flex':'none';
+  document.getElementById('qm-stop-btn').style.display=running?'flex':'none';
+  document.getElementById('qm-timer-display').style.display=running?'block':'none';
+}
+
+function logDistraction(){
+  APP.distractionCount++;
+  toast('🔔 Vyrušení zaznamenáno ('+APP.distractionCount+'x)','warning');
+}
+
+function updateOrbColors(){
+  const canvas=document.getElementById('orb-canvas');
+  let c1,c2;
+  if(APP.timerMode==='break'){c1='#00e5a0';c2='#00b894';}
+  else if(APP.timerMode==='paused'){c1='#ff9f43';c2='#ff6b6b';}
+  else if(APP.timerMode==='idle'){c1='#444466';c2='#333355';}
+  else if(APP.profile==='work'){c1='#4a9eff';c2='#7c5cfc';}
+  else if(APP.profile==='overtime'){c1='#ff6b6b';c2='#ff9f43';}
+  else {c1='#00e5a0';c2='#4a9eff';}
+  ORB.setColors(c1,c2);
+  document.getElementById('timer-time').style.setProperty('--orb-color1',c1);
+  document.getElementById('timer-time').style.background=`linear-gradient(135deg,${c1},${c2})`;
+  document.getElementById('timer-time').style.webkitBackgroundClip='text';
+  document.getElementById('timer-time').style.webkitTextFillColor='transparent';
+}
+
+// ---- ORB (3D Canvas) ----
+const ORB = (function(){
+  let canvas, ctx, w, h, c1='#4a9eff', c2='#7c5cfc';
+  let particles=[], t=0, pulseVal=0;
+  function init(){
+    canvas=document.getElementById('orb-canvas');
+    ctx=canvas.getContext('2d');
+    w=canvas.width; h=canvas.height;
+    initParticles();
+    render();
+  }
+  function initParticles(){
+    particles=[];
+    for(let i=0;i<80;i++){
+      const angle=Math.random()*Math.PI*2;
+      const r=80+Math.random()*60;
+      particles.push({ angle, r, speed:(Math.random()-0.5)*0.008, size:Math.random()*2.5+0.5, alpha:Math.random()*0.6+0.2, drift:Math.random()*0.002-0.001 });
+    }
+  }
+  function setColors(a,b){ c1=a; c2=b; }
+  function pulse(pct,mode){ pulseVal=pct; }
+  function render(){
+    requestAnimationFrame(render);
+    t+=0.012;
+    ctx.clearRect(0,0,w,h);
+    const cx=w/2, cy=h/2;
+
+    // Outer glow
+    const glowR=100+Math.sin(t)*5;
+    const glow=ctx.createRadialGradient(cx,cy,0,cx,cy,glowR+30);
+    glow.addColorStop(0,c1+'44');
+    glow.addColorStop(0.5,c2+'22');
+    glow.addColorStop(1,'transparent');
+    ctx.beginPath(); ctx.arc(cx,cy,glowR+30,0,Math.PI*2);
+    ctx.fillStyle=glow; ctx.fill();
+
+    // Main sphere
+    const sr=90+Math.sin(t*0.7)*4;
+    const grad=ctx.createRadialGradient(cx-20,cy-20,10,cx,cy,sr);
+    grad.addColorStop(0,'#ffffff55');
+    grad.addColorStop(0.3,c1+'cc');
+    grad.addColorStop(0.7,c2+'aa');
+    grad.addColorStop(1,c2+'44');
+    ctx.beginPath(); ctx.arc(cx,cy,sr,0,Math.PI*2);
+    ctx.fillStyle=grad; ctx.fill();
+
+    // Surface ripples
+    for(let i=0;i<3;i++){
+      const rs=sr*(0.4+i*0.22);
+      const ro=ctx.createRadialGradient(cx,cy,rs-4,cx,cy,rs);
+      ro.addColorStop(0,'transparent');
+      ro.addColorStop(0.5,'#ffffff18');
+      ro.addColorStop(1,'transparent');
+      ctx.beginPath(); ctx.arc(cx,cy,rs,0,Math.PI*2);
+      ctx.fillStyle=ro; ctx.fill();
+    }
+
+    // Specular highlight
+    const hl=ctx.createRadialGradient(cx-28,cy-28,2,cx-28,cy-28,40);
+    hl.addColorStop(0,'#ffffff66');
+    hl.addColorStop(1,'transparent');
+    ctx.beginPath(); ctx.arc(cx,cy,sr,0,Math.PI*2);
+    ctx.save(); ctx.clip();
+    ctx.beginPath(); ctx.arc(cx-28,cy-28,40,0,Math.PI*2);
+    ctx.fillStyle=hl; ctx.fill();
+    ctx.restore();
+
+    // Particles
+    particles.forEach(p=>{
+      p.angle+=p.speed; p.drift+=0.00005;
+      const orbR=sr+8+Math.sin(t+p.angle)*12;
+      const x=cx+Math.cos(p.angle)*orbR;
+      const y=cy+Math.sin(p.angle)*orbR*(0.4);
+      const alpha=p.alpha*(0.5+0.5*Math.sin(t*2+p.angle));
+      ctx.beginPath(); ctx.arc(x,y,p.size,0,Math.PI*2);
+      ctx.fillStyle=c1+Math.round(alpha*255).toString(16).padStart(2,'0');
+      ctx.fill();
+    });
+
+    // Progress arc overlay (pulse based)
+    if(pulseVal>0.05){
+      ctx.beginPath();
+      ctx.arc(cx,cy,sr+4,-Math.PI/2,-Math.PI/2+pulseVal*Math.PI*2);
+      ctx.strokeStyle='#ffffff55'; ctx.lineWidth=3; ctx.stroke();
+    }
+
+    // Breathing ring
+    const bw=2+Math.sin(t*0.5)*2;
+    ctx.beginPath(); ctx.arc(cx,cy,sr+14+Math.sin(t*0.5)*4,0,Math.PI*2);
+    ctx.strokeStyle=c1+'33'; ctx.lineWidth=bw; ctx.stroke();
+  }
+  return { init, setColors, pulse };
+})();
+
+// ---- AUDIO ENGINE (pouze notifikace) ----
+const AUDIO = (function(){
+  let actx=null;
+  function getCtx(){
+    if(!actx) actx=new (window.AudioContext||window.webkitAudioContext)();
+    if(actx.state==='suspended') actx.resume();
+    return actx;
+  }
+  function playNotification(){
+    try{
+      const ctx=getCtx();
+      const g=ctx.createGain(); g.gain.value=0.7; g.connect(ctx.destination);
+      [220,440,660].forEach((f,i)=>{
+        const o=ctx.createOscillator(), og=ctx.createGain();
+        o.frequency.value=f; o.type='sine';
+        og.gain.setValueAtTime(0.3,ctx.currentTime+i*0.1);
+        og.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+2.2+i*0.2);
+        o.connect(og); og.connect(g);
+        o.start(ctx.currentTime+i*0.1); o.stop(ctx.currentTime+2.5);
+      });
+    }catch(e){}
+  }
+  function playTick(){
+    try{
+      const ctx=getCtx();
+      const o=ctx.createOscillator(), g=ctx.createGain();
+      o.frequency.value=800; o.type='sine';
+      g.gain.setValueAtTime(0.12,ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.08);
+      o.connect(g); g.connect(ctx.destination);
+      o.start(); o.stop(ctx.currentTime+0.1);
+    }catch(e){}
+  }
+  function playCelebration(){
+    try{
+      const ctx=getCtx();
+      [523,659,784,1047].forEach((f,i)=>{
+        const o=ctx.createOscillator(), g=ctx.createGain();
+        o.frequency.value=f; o.type='triangle';
+        g.gain.setValueAtTime(0.18,ctx.currentTime+i*0.12);
+        g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+i*0.12+0.3);
+        o.connect(g); g.connect(ctx.destination);
+        o.start(ctx.currentTime+i*0.12); o.stop(ctx.currentTime+i*0.12+0.4);
+      });
+    }catch(e){}
+  }
+  return { playNotification, playTick, playCelebration };
+})();
+
+// ---- SESSIONS ----
+function saveSession(){
+  if(!APP.currentTaskId||!APP.sessionStartTs) return;
+  const focusMs=Math.max(0,APP.timerElapsed);
+  const totalMs=Date.now()-APP.sessionStartTs;
+  const breakMs=Math.max(0,totalMs-focusMs);
+  const sess={ id:uid(), taskId:APP.currentTaskId, profile:APP.profile, date:todayStr(), startTs:APP.sessionStartTs, endTs:Date.now(), focusMs, breakMs, distractions:APP.distractionCount, mood:APP.mood, blocks:APP.completedBlocks };
+  const sessions=DB.sessions(); sessions.push(sess); DB.saveSessions(sessions);
+  // Update task total time
+  const tasks=DB.tasks();
+  const t=tasks.find(x=>x.id===APP.currentTaskId);
+  if(t){ t.totalMs=(t.totalMs||0)+focusMs; t.sessions=(t.sessions||0)+1; DB.saveTasks(tasks); }
+  checkAchievements();
+  updateStreak();
+}
+
+// ---- TASKS ----
+let newTaskEisenhower=0, newTaskWorkType='deep', newTaskIsQuick=false;
+
+function selectEisenhower(q,el){
+  newTaskEisenhower=q;
+  document.querySelectorAll('#eisenhower-chips .chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function selectWorkType(t,el){
+  newTaskWorkType=t;
+  document.querySelectorAll('#work-type-chips .chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function saveTask(){
+  const name=document.getElementById('task-name-input').value.trim();
+  if(!name){ toast('Zadej název úkolu','warning'); return; }
+  const secEl=document.getElementById('task-section-input');
+  const includeStats=document.getElementById('task-include-stats').checked;
+  const dueDate=document.getElementById('task-due-date').value;
+  const tasks=DB.tasks();
+  if(APP.editingTaskId){
+    const t=tasks.find(x=>x.id===APP.editingTaskId);
+    if(t){
+      t.title=name; t.sectionId=secEl.value; t.note=document.getElementById('task-note-input').value;
+      t.quad=newTaskEisenhower; t.workType=newTaskWorkType;
+      t.isMIT=document.getElementById('task-mit-input').checked;
+      t.estimate=+document.getElementById('task-estimate-input').value;
+      t.isQuick=newTaskIsQuick; t.includeInStats=includeStats; t.dueDate=dueDate;
+    }
+    APP.editingTaskId=null;
+    document.getElementById('task-modal-title').textContent='Nový úkol';
+  } else {
+    const t={ id:uid(), title:name, sectionId:secEl.value, note:document.getElementById('task-note-input').value,
+      quad:newTaskEisenhower, workType:newTaskWorkType, isMIT:document.getElementById('task-mit-input').checked,
+      estimate:+document.getElementById('task-estimate-input').value,
+      isQuick:newTaskIsQuick, includeInStats:includeStats, dueDate:dueDate,
+      profile:APP.profile, date:todayStr(), totalMs:0, sessions:0, done:false };
+    tasks.push(t);
+    if(!newTaskIsQuick) APP.currentTaskId=t.id;
+  }
+  DB.saveTasks(tasks);
+  closeModal('modal-new-task');
+  renderTasks();
+  renderDiary();
+  updateCurrentTaskDisplay();
+  resetTaskForm();
+  toast('✅ Úkol uložen','success');
+}
+
+function resetTaskForm(){
+  document.getElementById('task-name-input').value='';
+  document.getElementById('task-note-input').value='';
+  document.getElementById('task-mit-input').checked=false;
+  document.getElementById('task-estimate-input').value='0';
+  document.getElementById('task-include-stats').checked=true;
+  document.getElementById('task-due-date').value=todayStr();
+  newTaskEisenhower=0; newTaskWorkType='deep'; newTaskIsQuick=false;
+  document.querySelectorAll('#eisenhower-chips .chip').forEach(c=>c.classList.remove('active'));
+  document.querySelectorAll('#work-type-chips .chip').forEach(c=>{c.classList.remove('active');if(c.textContent.includes('Hluboká'))c.classList.add('active');});
+  selectTaskType('focus');
+  // collapse advanced
+  const p=document.getElementById('advanced-panel'); if(p) p.style.display='none';
+  const bt=document.getElementById('advanced-toggle'); if(bt) bt.textContent='⚙️ Pokročilé ▸';
+}
+
+function selectTask(id){
+  APP.currentTaskId=id;
+  updateCurrentTaskDisplay();
+  switchTab('timer');
+  toast('📋 Úkol vybrán – spusť timer','info');
+}
+
+// ---- TASK TYPE TOGGLE ----
+function selectTaskType(type){
+  newTaskIsQuick=(type==='quick');
+  document.getElementById('task-type-quick').classList.toggle('selected',type==='quick');
+  document.getElementById('task-type-focus').classList.toggle('selected',type==='focus');
+  // Auto set includeInStats: quick tasks off by default, focus on
+  const cb=document.getElementById('task-include-stats');
+  if(cb&&!document.getElementById('task-name-input').value) cb.checked=(type==='focus');
+}
+
+function toggleAdvanced(){
+  const p=document.getElementById('advanced-panel');
+  const bt=document.getElementById('advanced-toggle');
+  const open=p.style.display==='none';
+  p.style.display=open?'block':'none';
+  bt.textContent=open?'⚙️ Pokročilé ▴':'⚙️ Pokročilé ▸';
+}
+
+// ---- DELETE TASK ----
+function deleteTask(id,e){
+  e.stopPropagation();
+  if(!confirm('Smazat tento úkol? Tato akce nelze vzít zpět.')) return;
+  let tasks=DB.tasks().filter(t=>t.id!==id);
+  DB.saveTasks(tasks);
+  if(APP.currentTaskId===id){ APP.currentTaskId=null; updateCurrentTaskDisplay(); }
+  renderTasks(); renderDiary();
+  toast('🗑 Úkol smazán','info');
+}
+
+// ---- COMPLETE QUICK TASK ----
+function completeQuickTask(id,e){
+  e.stopPropagation();
+  const tasks=DB.tasks(); const t=tasks.find(x=>x.id===id); if(!t) return;
+  t.done=!t.done;
+  t.doneDate=t.done?todayStr():null;
+  DB.saveTasks(tasks);
+  renderTasks(); renderDiary();
+  if(t.done){ AUDIO.playCelebration(); toast('✅ Hotovo! '+rand(CELEBS),'success',3000); }
+}
+
+// ---- TASK VIEW TOGGLE ----
+let currentTaskView='list';
+function setTaskView(v){
+  currentTaskView=v;
+  document.getElementById('tasks-list-view').style.display=v==='list'?'block':'none';
+  document.getElementById('tasks-diary-view').style.display=v==='diary'?'block':'none';
+  document.getElementById('tv-list').classList.toggle('active',v==='list');
+  document.getElementById('tv-diary').classList.toggle('active',v==='diary');
+  if(v==='diary') renderDiary();
+}
+
+// ---- DIARY VIEW ----
+let diarySelectedDate=todayStr();
+function renderDiary(){
+  if(currentTaskView!=='diary') return;
+  const tasks=DB.tasks();
+  // Build 14-day strip (7 past + today + 6 future)
+  const strip=document.getElementById('diary-strip');
+  if(!strip) return;
+  const days=[]; const today=new Date();
+  for(let i=-3;i<=10;i++){
+    const d=new Date(today); d.setDate(d.getDate()+i); days.push(d);
+  }
+  const dayNames=['Ne','Po','Út','St','Čt','Pá','So'];
+  strip.innerHTML=days.map(d=>{
+    const ds=d.toISOString().slice(0,10);
+    const isToday=ds===todayStr();
+    const isSel=ds===diarySelectedDate;
+    const hasTasks=tasks.some(t=>t.dueDate===ds&&!t.done);
+    return `<div class="diary-day-pill ${isToday?'today-pill':''} ${isSel?'selected':''} ${hasTasks?'has-tasks':''}" onclick="selectDiaryDay('${ds}')">
+      <div class="dd-name">${dayNames[d.getDay()]}</div>
+      <div class="dd-num">${d.getDate()}</div>
+      <div class="dd-dot"></div>
+    </div>`;
+  }).join('');
+
+  // Scroll selected into view
+  setTimeout(()=>{
+    const sel=strip.querySelector('.selected'); if(sel) sel.scrollIntoView({inline:'center',behavior:'smooth'});
+  },50);
+
+  renderDiaryDay();
+}
+
+function selectDiaryDay(date){
+  diarySelectedDate=date; renderDiary();
+}
+
+function renderDiaryDay(){
+  const tasks=DB.tasks();
+  const secs=DB.sections();
+  const today=todayStr();
+  const isTomorrow=new Date(diarySelectedDate).getTime()-new Date(today).getTime()===86400000;
+
+  // Header
+  const hdr=document.getElementById('diary-day-header');
+  if(hdr){
+    const d=new Date(diarySelectedDate+'T12:00:00');
+    const dayNames=['Neděle','Pondělí','Úterý','Středa','Čtvrtek','Pátek','Sobota'];
+    const label=diarySelectedDate===today?'📅 Dnes':isTomorrow?'📅 Zítra':`📅 ${dayNames[d.getDay()]} ${d.getDate()}.${d.getMonth()+1}.`;
+    hdr.textContent=label;
+  }
+
+  // Set date in quick input
+  const qi=document.getElementById('diary-quick-input'); if(qi) qi.dataset.date=diarySelectedDate;
+
+  // Tasks for selected day
+  const dayTasks=tasks.filter(t=>t.dueDate===diarySelectedDate);
+  const diaryList=document.getElementById('diary-task-list');
+  if(diaryList){
+    if(!dayTasks.length){
+      diaryList.innerHTML='<div style="font-size:13px;color:var(--text-dim);padding:8px 0 4px">Žádné úkoly na tento den. Přidej je výše.</div>';
+    } else {
+      diaryList.innerHTML=dayTasks.map(t=>{
+        const sec=secs.find(s=>s.id===t.sectionId);
+        return `<div class="diary-task-row" onclick="${t.isQuick?`completeQuickTask('${t.id}',event)`:`openTaskDetail('${t.id}')`}">
+          <div class="dtask-check ${t.done?'done-check':''}" onclick="${t.isQuick?`completeQuickTask('${t.id}',event)`:''}">${t.done?'✓':''}</div>
+          <div class="dtask-title ${t.done?'done-title':''}">${t.title}${t.note?`<div style="font-size:11px;color:var(--text-dim);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${t.note}</div>`:''}</div>
+          <span class="dtask-type">${t.isQuick?'⚡':'🎯'}</span>
+          <button onclick="deleteTask('${t.id}',event)" style="background:none;border:none;color:#ff5050;font-size:14px;cursor:pointer;padding:4px;opacity:.6">🗑</button>
+        </div>`;
+      }).join('');
+    }
+  }
+
+  // Unscheduled tasks (no dueDate)
+  const unschEl=document.getElementById('diary-unscheduled');
+  if(unschEl){
+    const unsch=tasks.filter(t=>!t.dueDate&&!t.done);
+    if(unsch.length){
+      unschEl.innerHTML=`<div class="diary-section-label">📌 Bez data (${unsch.length})</div>`+unsch.map(t=>{
+        const sec=secs.find(s=>s.id===t.sectionId);
+        return `<div class="diary-task-row" onclick="openTaskDetail('${t.id}')">
+          <div class="dtask-check"></div>
+          <div class="dtask-title">${t.title}</div>
+          <span class="dtask-type">${t.isQuick?'⚡':'🎯'}</span>
+          <button onclick="scheduleDiaryTask('${t.id}','${diarySelectedDate}',event)" style="background:rgba(74,158,255,0.15);border:1px solid rgba(74,158,255,0.3);color:var(--accent);font-size:11px;border-radius:6px;padding:3px 7px;cursor:pointer">+ Dnes</button>
+        </div>`;
+      }).join('');
+    } else { unschEl.innerHTML=''; }
+  }
+}
+
+function scheduleDiaryTask(taskId,date,e){
+  e.stopPropagation();
+  const tasks=DB.tasks(); const t=tasks.find(x=>x.id===taskId);
+  if(t){ t.dueDate=date; DB.saveTasks(tasks); renderDiary(); toast('📅 Naplánováno na '+date,'success'); }
+}
+
+function diaryQuickAdd(){
+  const input=document.getElementById('diary-quick-input');
+  const name=input.value.trim(); if(!name) return;
+  const date=input.dataset.date||diarySelectedDate||todayStr();
+  const t={ id:uid(), title:name, sectionId:'', note:'', quad:0, workType:'shallow',
+    isMIT:false, estimate:0, isQuick:true, includeInStats:false, dueDate:date,
+    profile:APP.profile, date:todayStr(), totalMs:0, sessions:0, done:false };
+  const tasks=DB.tasks(); tasks.push(t); DB.saveTasks(tasks);
+  input.value=''; renderDiary();
+  toast('⚡ Rychlý úkol přidán','success',2000);
+}
+
+function openTaskDetail(id){
+  const tasks=DB.tasks(); const t=tasks.find(x=>x.id===id); if(!t) return;
+  const secs=DB.sections(); const sec=secs.find(s=>s.id===t.sectionId);
+  const sessions=DB.sessions().filter(s=>s.taskId===id);
+  const totalFocus=sessions.reduce((a,x)=>a+x.focusMs,0);
+  const body=document.getElementById('modal-task-detail-body');
+  const footer=document.getElementById('modal-task-detail-footer');
+  document.getElementById('detail-title').textContent=t.title;
+  body.innerHTML=`
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+      ${sec?`<span class="tag tag-section" style="background:${sec.color}22;color:${sec.color};border-color:${sec.color}44">${sec.icon||'📁'} ${sec.name}</span>`:''}
+      ${t.isMIT?'<span class="tag tag-mit">🎯 MIT</span>':''}
+      ${t.quad===1?'<span class="tag tag-urgent">🔴 Dělej hned</span>':t.quad===2?'<span class="tag tag-important">🟡 Naplánuj</span>':''}
+      <span class="tag tag-shallow">${t.workType==='deep'?'🧠 Deep Work':'📋 Mělká práce'}</span>
+    </div>
+    ${t.note?`<div style="font-size:14px;color:var(--text-dim);line-height:1.6;margin-bottom:12px;padding:10px;background:var(--glass);border-radius:8px">${t.note}</div>`:''}
+    <div class="stats-grid" style="margin-bottom:12px">
+      <div class="stat-card"><div class="stat-value">${fmtMins(totalFocus)}</div><div class="stat-label">Celkem čas</div></div>
+      <div class="stat-card"><div class="stat-value">${sessions.length}</div><div class="stat-label">Sezení</div></div>
+    </div>
+    ${t.estimate>0?`<div style="font-size:13px;color:var(--text-dim);margin-bottom:12px">⏱ Odhad: ${t.estimate}min · Skutečnost: ${Math.round(totalFocus/60000)}min ${totalFocus>0&&t.estimate>0?(totalFocus/60000)>t.estimate?'(přečerpáno ⚠️)':'(v plánu ✅)':''}</div>`:''}
+    <div class="section-title">Sezení</div>
+    ${sessions.map(s=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:13px"><span style="color:var(--text-dim)">${s.date}</span><span>${fmtMins(s.focusMs)}</span><span style="color:var(--text-dim)">${s.distractions}x vyrušení</span></div>`).join('')||'<div style="font-size:13px;color:var(--text-dim)">Žádná sezení</div>'}
+  `;
+  footer.innerHTML=`
+    <button class="btn btn-ghost" onclick="closeModal('modal-task-detail')" style="flex:1">Zavřít</button>
+    <button class="btn btn-ghost" onclick="editTask('${id}')" style="flex:1">✏️ Upravit</button>
+    ${!t.isQuick?`<button class="btn btn-primary" onclick="selectTask('${id}');closeModal('modal-task-detail')" style="flex:1">▶ Spustit</button>`:''}
+    ${!t.done?`<button class="btn btn-success" onclick="markDone('${id}')" style="flex:1">${t.isQuick?'☑ Hotovo':'✅ Hotovo'}</button>`:''}
+    <button class="btn" onclick="deleteTask('${id}',event);closeModal('modal-task-detail')" style="flex:1;background:rgba(255,80,80,0.15);color:#ff5050;border:1px solid rgba(255,80,80,0.3)">🗑 Smazat</button>
+  `;
+  openModal('modal-task-detail');
+}
+
+function editTask(id){
+  APP.editingTaskId=id;
+  const tasks=DB.tasks(); const t=tasks.find(x=>x.id===id); if(!t) return;
+  closeAllModals();
+  document.getElementById('task-name-input').value=t.title;
+  document.getElementById('task-note-input').value=t.note||'';
+  document.getElementById('task-mit-input').checked=t.isMIT||false;
+  document.getElementById('task-estimate-input').value=t.estimate||0;
+  document.getElementById('task-include-stats').checked=t.includeInStats!==false;
+  document.getElementById('task-due-date').value=t.dueDate||todayStr();
+  newTaskEisenhower=t.quad||0; newTaskWorkType=t.workType||'deep'; newTaskIsQuick=t.isQuick||false;
+  renderSectionSelect('task-section-input',t.sectionId);
+  document.querySelectorAll('#eisenhower-chips .chip').forEach(c=>c.classList.toggle('active',+c.dataset.q===newTaskEisenhower));
+  document.querySelectorAll('#work-type-chips .chip').forEach(c=>c.classList.toggle('active',(newTaskWorkType==='deep'&&c.textContent.includes('Hluboká'))||(newTaskWorkType==='shallow'&&c.textContent.includes('Mělká'))));
+  selectTaskType(newTaskIsQuick?'quick':'focus');
+  document.getElementById('task-modal-title').textContent='Upravit úkol';
+  openModal('modal-new-task');
+}
+
+function markDone(id){
+  const tasks=DB.tasks(); const t=tasks.find(x=>x.id===id);
+  if(t){ t.done=true; t.doneDate=todayStr(); DB.saveTasks(tasks); }
+  closeAllModals(); renderTasks(); renderStats();
+  AUDIO.playCelebration();
+  toast('🎉 Úkol dokončen! '+rand(CELEBS),'success',4000);
+}
+
+function filterByQuad(q){ APP.selectedQuad=q; renderTasks(); }
+
+function updateCurrentTaskDisplay(){
+  const tasks=DB.tasks(); const t=tasks.find(x=>x.id===APP.currentTaskId); if(!t) return;
+  const secs=DB.sections(); const sec=secs.find(s=>s.id===t.sectionId);
+  document.getElementById('ct-section').textContent=sec?`${sec.icon||''} ${sec.name}`:'';
+  document.getElementById('ct-title').textContent=t.title;
+  const sessions=DB.sessions().filter(s=>s.taskId===t.id);
+  document.getElementById('ct-blocks').textContent=sessions.reduce((a,x)=>a+(x.blocks||0),0)+APP.completedBlocks;
+  document.getElementById('mini-task').textContent=t.title;
+  // Imm task
+  document.getElementById('imm-task').textContent=t.title.toUpperCase();
+}
+
+// ---- SECTIONS ----
+function addSection(){
+  const name=document.getElementById('new-section-name').value.trim();
+  if(!name) return;
+  const color=document.getElementById('new-section-color').value;
+  const icons=['📁','💼','📚','🎯','💡','🔧','🌱','🎨','💰','🏃','✍️','🔬','🎵','🌐'];
+  const sec={ id:uid(), name, color, icon:icons[Math.floor(Math.random()*icons.length)] };
+  const secs=DB.sections(); secs.push(sec); DB.saveSections(secs);
+  document.getElementById('new-section-name').value='';
+  renderSectionsList();
+  renderSectionSelect('task-section-input');
+  renderSectionSelect('exp-section');
+  renderQmSections();
+  toast('📂 Sekce přidána','success');
+}
+
+function deleteSection(id){
+  const secs=DB.sections().filter(x=>x.id!==id); DB.saveSections(secs);
+  renderSectionsList(); renderSectionSelect('task-section-input'); renderSectionSelect('exp-section'); renderQmSections();
+}
+
+function renameSection(id){
+  const secs=DB.sections(); const s=secs.find(x=>x.id===id); if(!s) return;
+  const row=document.getElementById('sec-row-'+id); if(!row) return;
+  const nameSpan=row.querySelector('.sec-name');
+  const input=document.createElement('input');
+  input.className='input'; input.value=s.name; input.style.cssText='flex:1;height:32px;padding:4px 8px;font-size:14px';
+  nameSpan.replaceWith(input); input.focus(); input.select();
+  const save=()=>{
+    const val=input.value.trim(); if(val) s.name=val;
+    DB.saveSections(secs);
+    renderSectionsList(); renderSectionSelect('task-section-input'); renderSectionSelect('exp-section'); renderQmSections(); renderSectionFilterChips();
+  };
+  input.addEventListener('blur',save);
+  input.addEventListener('keydown',e=>{ if(e.key==='Enter') input.blur(); if(e.key==='Escape'){ input.value=s.name; input.blur(); } });
+}
+
+function renderSectionsList(){
+  const secs=DB.sections();
+  const el=document.getElementById('sections-list');
+  el.innerHTML=secs.map(s=>`
+    <div id="sec-row-${s.id}" style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05)">
+      <span style="font-size:18px">${s.icon||'📁'}</span>
+      <div class="section-color-dot" style="background:${s.color}"></div>
+      <span class="sec-name" style="flex:1;font-size:14px;color:var(--text)">${s.name}</span>
+      <button class="btn btn-ghost btn-icon" onclick="renameSection('${s.id}')" style="font-size:12px;width:32px;height:32px" title="Přejmenovat">✏️</button>
+      <button class="btn btn-ghost btn-icon" onclick="deleteSection('${s.id}')" style="font-size:12px;width:32px;height:32px" title="Smazat">🗑</button>
+    </div>`).join('');
+}
+
+function renderSectionSelect(elId, selectedId=''){
+  const el=document.getElementById(elId); if(!el) return;
+  const secs=DB.sections();
+  el.innerHTML='<option value="">Bez sekce</option>'+secs.map(s=>`<option value="${s.id}" ${s.id===selectedId?'selected':''}>${s.icon||''} ${s.name}</option>`).join('');
+}
+
+function renderQmSections(){
+  const secs=DB.sections();
+  const el=document.getElementById('qm-section-grid'); if(!el) return;
+  el.innerHTML=secs.map(s=>`
+    <div class="section-tile" onclick="selectQmSection('${s.id}',this)" style="border-color:transparent">
+      <div class="tile-icon">${s.icon||'📁'}</div>
+      <div>${s.name}</div>
+    </div>`).join('');
+}
+
+let qmSelectedSection='';
+function selectQmSection(id,el){
+  qmSelectedSection=id;
+  document.querySelectorAll('#qm-section-grid .section-tile').forEach(t=>t.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function renderSectionFilterChips(){
+  const secs=DB.sections();
+  const el=document.getElementById('section-filter-chips'); if(!el) return;
+  el.innerHTML=secs.map(s=>`<button class="chip" onclick="filterBySection('${s.id}',this)" style="border-color:${s.color}44">${s.icon||''} ${s.name}</button>`).join('');
+}
+
+let filterSection='';
+function filterBySection(id,el){
+  if(filterSection===id){ filterSection=''; document.querySelectorAll('#section-filter-chips .chip').forEach(c=>c.classList.remove('active')); }
+  else { filterSection=id; document.querySelectorAll('#section-filter-chips .chip').forEach(c=>c.classList.remove('active')); el.classList.add('active'); }
+  renderTasks();
+}
+
+// ---- RENDER TASKS ----
+function renderTasks(){
+  let tasks=DB.tasks();
+  const secs=DB.sections();
+  // MIT
+  const mit=tasks.filter(t=>t.isMIT&&!t.done);
+  const mitEl=document.getElementById('mit-list');
+  mitEl.innerHTML=mit.length?mit.map(t=>{
+    const sec=secs.find(s=>s.id===t.sectionId);
+    return `<div class="task-card ${t.id===APP.currentTaskId?'active-task':''}" onclick="openTaskDetail('${t.id}')">
+      <div class="task-title">🎯 ${t.title}</div>
+      <div class="task-meta">${sec?`<span class="tag tag-section" style="background:${sec.color}22;color:${sec.color};border-color:${sec.color}44">${sec.icon||''} ${sec.name}</span>`:''}<span class="task-time">⏱ ${fmtMins(t.totalMs)}</span></div>
+    </div>`;
+  }).join(''):'<div style="font-size:13px;color:var(--text-dim);padding:8px 0">Žádné MIT úkoly. Přidej je v detailu úkolu.</div>';
+
+  // Eisenhower counts
+  [1,2,3,4].forEach(q=>{ document.getElementById('eq'+q).textContent=tasks.filter(t=>t.quad===q&&!t.done).length; });
+
+  // Filter
+  let filtered=tasks.filter(t=>!t.done);
+  if(APP.selectedQuad>0) filtered=filtered.filter(t=>t.quad===APP.selectedQuad);
+  if(filterSection) filtered=filtered.filter(t=>t.sectionId===filterSection);
+
+  // Done tasks at bottom
+  const done=tasks.filter(t=>t.done);
+
+  const el=document.getElementById('task-list');
+  const fmtDue=d=>{ if(!d) return ''; const today=todayStr(); const tom=new Date(); tom.setDate(tom.getDate()+1); const tomStr=tom.toISOString().slice(0,10); if(d===today) return 'Dnes'; if(d===tomStr) return 'Zítra'; return d.slice(5).replace('-','.'); };
+  const renderCard=(t,isDone=false)=>{
+    const sec=secs.find(s=>s.id===t.sectionId);
+    const isActive=t.id===APP.currentTaskId;
+    const qkClickArea=t.isQuick?`onclick="completeQuickTask('${t.id}',event)"`:`onclick="openTaskDetail('${t.id}')"`;
+    return `<div class="task-card ${isActive?'active-task':''} ${t.id===APP.currentTaskId&&APP.timerMode==='paused'?'paused-task':''}" style="${isDone?'opacity:0.5':''}">
+      <div style="display:flex;align-items:center;gap:10px" ${qkClickArea}>
+        ${t.isQuick?`<div class="quick-task-check ${isDone?'done':''}" onclick="completeQuickTask('${t.id}',event)" style="pointer-events:all">${isDone?'✓':''}</div>`:''}
+        <div style="flex:1;min-width:0">
+          <div class="task-title" style="${isDone?'text-decoration:line-through':''}${t.isQuick&&!isDone?' cursor:pointer':''}">${isDone&&!t.isQuick?'✅ ':''}${t.title}</div>
+          <div class="task-meta">
+            ${sec?`<span class="tag tag-section" style="background:${sec.color}22;color:${sec.color};border-color:${sec.color}44">${sec.icon||''} ${sec.name}</span>`:''}
+            ${t.isQuick?'<span class="tag tag-quick">⚡ Rychlý</span>':''}
+            ${t.isMIT?'<span class="tag tag-mit">🎯 MIT</span>':''}
+            ${t.quad===1?'<span class="tag tag-urgent">🔴 Hned</span>':t.quad===2?'<span class="tag tag-important">🟡 Plán</span>':''}
+            ${!t.isQuick?`<span class="task-time">⏱ ${fmtMins(t.totalMs)}</span>`:''}
+            ${t.dueDate&&!isDone?`<span class="tag tag-date">📅 ${fmtDue(t.dueDate)}</span>`:''}
+            ${t.includeInStats===false?'<span class="tag tag-no-stats">📊 bez stat.</span>':''}
+          </div>
+        </div>
+      </div>
+      <button class="task-delete-btn" onclick="deleteTask('${t.id}',event)" title="Smazat">🗑</button>
+    </div>`;
+  };
+  el.innerHTML=filtered.map(t=>renderCard(t)).join('')+(done.length?`<div class="section-title" style="margin-top:16px">Dokončené (${done.length})</div>`+done.map(t=>renderCard(t,true)).join(''):'');
+}
+
+// ---- QUICK MODE ----
+function toggleQuickMode(){
+  APP.quickMode=!APP.quickMode;
+  const qm=document.getElementById('quick-mode');
+  qm.style.display=APP.quickMode?'flex':'none';
+  document.getElementById('quick-mode-btn').textContent=APP.quickMode?'✕':'⚡';
+  if(APP.quickMode){ renderQmSections(); updateTimerButtons(); }
+}
+
+function quickStart(){
+  const name=document.getElementById('qm-task-name').value.trim();
+  if(!name){ toast('Zadej název úkolu','warning'); return; }
+  const tasks=DB.tasks();
+  const t={ id:uid(), title:name, sectionId:qmSelectedSection, note:document.getElementById('qm-task-note').value, quad:0, workType:'deep', isMIT:false, estimate:0, profile:APP.profile, date:todayStr(), totalMs:0, sessions:0, done:false };
+  tasks.push(t); DB.saveTasks(tasks);
+  APP.currentTaskId=t.id;
+  updateCurrentTaskDisplay();
+  startTimerFlow();
+}
+
+// ---- VOICE INPUT ----
+function toggleVoice(target='qm'){
+  APP.voiceTarget=target;
+  if(!('SpeechRecognition' in window||'webkitSpeechRecognition' in window)){
+    toast('Hlasové diktování není v tomto prohlížeči podporováno. Použij Chrome nebo Safari.','warning');
+    return;
+  }
+  if(APP.voiceActive){ stopVoice(); return; }
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  APP.recognition=new SR();
+  APP.recognition.lang='cs-CZ';
+  APP.recognition.continuous=true;
+  APP.recognition.interimResults=true;
+  APP.recognition.onresult=e=>{
+    const transcript=Array.from(e.results).map(r=>r[0].transcript).join('');
+    if(APP.voiceTarget==='diary'){
+      const el=document.getElementById('diary-quick-input'); if(el) el.value=transcript; return;
+    }
+    const noteEl=APP.voiceTarget==='task'?document.getElementById('task-note-input'):document.getElementById('qm-task-note');
+    if(noteEl) noteEl.value=transcript;
+    const nameEl=APP.voiceTarget==='task'?document.getElementById('task-name-input'):document.getElementById('qm-task-name');
+    if(nameEl&&!nameEl.value&&transcript.length>0) nameEl.value=transcript.slice(0,60);
+  };
+  APP.recognition.onerror=()=>stopVoice();
+  APP.recognition.onend=()=>stopVoice();
+  APP.recognition.start();
+  APP.voiceActive=true;
+  document.getElementById('voice-btn').classList.add('listening');
+  if(document.getElementById('voice-btn-task')) document.getElementById('voice-btn-task').classList.add('listening');
+  toast('🎤 Diktování zapnuto – mluv...','info');
+}
+
+function stopVoice(){
+  if(APP.recognition){ try{APP.recognition.stop();}catch(e){} APP.recognition=null; }
+  APP.voiceActive=false;
+  document.querySelectorAll('#voice-btn,#voice-btn-task,#voice-btn-diary').forEach(b=>b&&b.classList.remove('listening'));
+}
+
+// ---- BREAK RECOMMENDATION ----
+function showBreakRecommendation(){
+  const brk=document.getElementById('break-recommendation');
+  const dur=APP.breakDuration/60000;
+  const type=dur<=5?'short':dur<=17?'medium':'long';
+  const acts=BREAK_TIPS_BY_DURATION[type];
+  const cfg=MOOD_CONFIG[APP.mood];
+  document.getElementById('break-science').textContent=`Přestávka ${fmtMs(APP.breakDuration)} · ${cfg.blocks.split('.')[0]}.`;
+  document.getElementById('break-activities').innerHTML=acts.map(a=>`<li>${a}</li>`).join('');
+  brk.style.display='block';
+}
+
+// ---- PAUSED TASK BANNER ----
+function renderPausedTaskBanner(){
+  const banner=document.getElementById('paused-task-banner'); if(!banner) return;
+  if(!APP.pausedTaskId){ banner.style.display='none'; return; }
+  // Nezobrazuj banner pokud pracujeme na tom samém úkolu co je pauznutý
+  if(APP.timerMode==='focus'&&APP.currentTaskId===APP.pausedTaskId){ banner.style.display='none'; return; }
+  const tasks=DB.tasks(); const t=tasks.find(x=>x.id===APP.pausedTaskId);
+  if(!t){ banner.style.display='none'; return; }
+  banner.style.display='block';
+  document.getElementById('paused-task-name').textContent=t.title;
+  document.getElementById('paused-task-time').textContent=fmtMs(APP.pausedElapsed||0);
+}
+
+function returnToPaused(){
+  if(!APP.pausedTaskId) return;
+  // Uložit aktuální sezení pokud běží
+  if(APP.timerMode==='focus'||APP.timerMode==='break') pauseTimer();
+  // Přepnout na pauzovaný úkol
+  const prevPaused=APP.pausedTaskId;
+  const prevElapsed=APP.pausedElapsed||0;
+  APP.currentTaskId=prevPaused;
+  APP.timerElapsed=prevElapsed;
+  APP.pausedTaskId=null; APP.pausedElapsed=0;
+  updateCurrentTaskDisplay();
+  APP.timerMode='paused';
+  resumeTimer();
+  toast('↩️ Vrácen k pauzovanému úkolu','info');
+}
+
+// ---- EYE & HYDRATION TIMERS ----
+function setupEyeTimer(){
+  clearEyeTimer();
+  if(!S.eye) return;
+  APP.eyeTimer=setInterval(()=>{
+    if(APP.timerMode!=='focus') return;
+    const el=document.getElementById('eye-reminder');
+    el.style.display='block';
+    setTimeout(()=>el.style.display='none',20000);
+    toast('👁️ Pravidlo 20-20-20 – podívej se na vzdálený objekt!','info');
+  },20*60*1000);
+}
+function clearEyeTimer(){ if(APP.eyeTimer){clearInterval(APP.eyeTimer);APP.eyeTimer=null;} }
+
+function setupHydrationTimer(){
+  clearHydrationTimer();
+  if(!S.hydration||S.hydration<=0) return;
+  APP.hydrationTimer=setInterval(()=>{
+    if(APP.timerMode!=='focus') return;
+    toast('💧 Čas na vodu! Dehydratace snižuje koncentraci o 20 %.','info',5000);
+  },S.hydration*60*1000);
+}
+function clearHydrationTimer(){ if(APP.hydrationTimer){clearInterval(APP.hydrationTimer);APP.hydrationTimer=null;} }
+
+// ---- TIMEBOX ----
+function setTimebox(){
+  const taskId=document.getElementById('timebox-task-select').value;
+  const time=document.getElementById('timebox-time').value;
+  if(!taskId||!time){ toast('Vyber úkol a čas','warning'); return; }
+  APP.timebox={ taskId, deadline:time };
+  toast('⏰ Deadline nastaven na '+time,'success');
+}
+
+function checkTimebox(){
+  if(!APP.timebox||APP.timebox.taskId!==APP.currentTaskId) return;
+  const [h,m]=APP.timebox.deadline.split(':').map(Number);
+  const now=new Date();
+  const deadlineMs=new Date(now.getFullYear(),now.getMonth(),now.getDate(),h,m,0).getTime();
+  const remaining=deadlineMs-Date.now();
+  const el=document.getElementById('timebox-display');
+  const rem=document.getElementById('timebox-remaining');
+  if(remaining>0){ el.style.display='flex'; rem.textContent=fmtMs(remaining); }
+  else { rem.textContent='PŘEKROČENO!'; rem.style.color='var(--red)'; }
+}
+
+// ---- CAFFEINE ----
+function logCaffeine(){
+  const now=new Date();
+  const entry={ time:`${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`, ts:Date.now(), date:todayStr() };
+  const log=DB.caffeine(); log.push(entry); DB.saveCaffeine(log);
+  renderCaffeineLog();
+  toast('☕ Káva zaznamenána! Peak účinku za 45–60 min.','info');
+}
+
+function renderCaffeineLog(){
+  const log=DB.caffeine().filter(x=>x.date===todayStr());
+  const el=document.getElementById('caffeine-log'); if(!el) return;
+  el.innerHTML=log.map(e=>`<div class="caffeine-item"><div class="caffeine-dot"></div><div style="font-size:14px;font-weight:600">☕ ${e.time}</div><div style="font-size:12px;color:var(--text-dim)">Peak účinku: ${calcCaffeinePeak(e.ts)}</div></div>`).join('');
+  const advice=document.getElementById('caffeine-advice'); if(!advice) return;
+  const h=currentHour();
+  if(h>=14){ advice.textContent='⚠️ Po 14:00 kofein naruší spánek noční sovy po půlnoci!'; advice.style.color='var(--orange)'; }
+  else if(log.length===0){ advice.textContent='Ideální čas pro první kávu je 9–11 hod.'; }
+  else { advice.textContent='Poslední ideální káva: 13:30'; }
+}
+
+function calcCaffeinePeak(ts){ const peak=new Date(ts+50*60*1000); return `${peak.getHours()}:${String(peak.getMinutes()).padStart(2,'0')}`; }
+
+// ---- STATISTICS ----
+// Helper: exclude sessions for tasks with includeInStats===false
+function statsEligible(sessions){
+  const tasks=DB.tasks();
+  const excluded=new Set(tasks.filter(t=>t.includeInStats===false).map(t=>t.id));
+  return sessions.filter(s=>!excluded.has(s.taskId));
+}
+
+function renderStats(){
+  const allSessions=DB.sessions();
+  const sessions=statsEligible(allSessions);
+  const today=todayStr();
+  const todaySess=sessions.filter(s=>s.date===today);
+  const weekAgo=new Date(); weekAgo.setDate(weekAgo.getDate()-7);
+  const weekSess=sessions.filter(s=>new Date(s.date)>=weekAgo);
+
+  const todayMs=todaySess.reduce((a,x)=>a+x.focusMs,0);
+  const weekMs=weekSess.reduce((a,x)=>a+x.focusMs,0);
+  document.getElementById('stat-today').textContent=fmtH(todayMs);
+  document.getElementById('stat-week').textContent=fmtH(weekMs);
+  document.getElementById('stat-sessions').textContent=todaySess.length;
+  document.getElementById('stat-distractions').textContent=todaySess.reduce((a,x)=>a+x.distractions,0);
+
+  renderWLB(sessions);
+  renderHeatmap(sessions);
+  renderSectionBreakdown(sessions);
+  renderCaffeineLog();
+  renderAchievements();
+  checkOvertimeAlert(sessions);
+}
+
+function renderWLB(sessions){
+  const weekAgo=new Date(); weekAgo.setDate(weekAgo.getDate()-7);
+  const week=sessions.filter(s=>new Date(s.date)>=weekAgo);
+  const workMs=week.filter(s=>s.profile==='work').reduce((a,x)=>a+x.focusMs,0);
+  const otMs=week.filter(s=>s.profile==='overtime').reduce((a,x)=>a+x.focusMs,0);
+  const perMs=week.filter(s=>s.profile==='personal').reduce((a,x)=>a+x.focusMs,0);
+  const total=workMs+otMs+perMs||1;
+  const canvas=document.getElementById('wlb-canvas'); if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  const cx=80,cy=80,r=65;
+  ctx.clearRect(0,0,160,160);
+  const slices=[{v:workMs,c:'#4a9eff'},{v:otMs,c:'#ff6b6b'},{v:perMs,c:'#00e5a0'}];
+  let start=-Math.PI/2;
+  slices.forEach(s=>{
+    const ang=(s.v/total)*Math.PI*2;
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,start,start+ang);
+    ctx.fillStyle=s.c; ctx.fill();
+    start+=ang;
+  });
+  // Center hole
+  ctx.beginPath(); ctx.arc(cx,cy,40,0,Math.PI*2);
+  ctx.fillStyle='#141428'; ctx.fill();
+  const legend=document.getElementById('wlb-legend'); if(!legend) return;
+  legend.innerHTML=[
+    {c:'#4a9eff',l:'Práce – standardní',v:workMs},
+    {c:'#ff6b6b',l:'Přesčas',v:otMs},
+    {c:'#00e5a0',l:'Osobní',v:perMs}
+  ].map(x=>`<div class="wlb-legend-item"><div class="wlb-dot" style="background:${x.c}"></div><span style="flex:1">${x.l}</span><span style="color:var(--text-dim)">${fmtH(x.v)}</span></div>`).join('');
+}
+
+function checkOvertimeAlert(sessions){
+  const weekAgo=new Date(); weekAgo.setDate(weekAgo.getDate()-7);
+  const otMs=sessions.filter(s=>new Date(s.date)>=weekAgo&&s.profile==='overtime').reduce((a,x)=>a+x.focusMs,0);
+  const limitMs=S.overtimeLimit*3600000;
+  const al=document.getElementById('overtime-alert'); if(!al) return;
+  if(otMs>limitMs){
+    al.style.display='block';
+    const extra=fmtH(otMs-limitMs);
+    const rate=S.hourlyRate||0;
+    const extraH=(otMs-limitMs)/3600000;
+    const money=rate>0?` (${Math.round(extraH*rate).toLocaleString('cs-CZ')} Kč)`:'';
+    document.getElementById('overtime-msg').textContent=`Překročil jsi limit přesčasů o ${extra}${money}. Čas na odpočinek!`;
+  } else { al.style.display='none'; }
+}
+
+function renderHeatmap(sessions){
+  const el=document.getElementById('heatmap'); if(!el) return;
+  el.innerHTML='';
+  const days=28;
+  for(let i=days-1;i>=0;i--){
+    const d=new Date(); d.setDate(d.getDate()-i);
+    const ds=d.toISOString().slice(0,10);
+    const ms=sessions.filter(s=>s.date===ds).reduce((a,x)=>a+x.focusMs,0);
+    const h=ms/3600000;
+    const lvl=h===0?'':h<1?'l1':h<2?'l2':h<4?'l3':'l4';
+    const cell=document.createElement('div');
+    cell.className='hm-cell '+(lvl||'');
+    cell.dataset.tip=`${ds}: ${fmtH(ms)}`;
+    el.appendChild(cell);
+  }
+}
+
+function renderSectionBreakdown(sessions){
+  const el=document.getElementById('section-breakdown'); if(!el) return;
+  const secs=DB.sections();
+  const tasks=DB.tasks();
+  const maxMs=Math.max(...secs.map(s=>{
+    const sTaskIds=tasks.filter(t=>t.sectionId===s.id).map(t=>t.id);
+    return sessions.filter(x=>sTaskIds.includes(x.taskId)).reduce((a,x)=>a+x.focusMs,0);
+  }),1);
+  el.innerHTML=secs.map(s=>{
+    const sTaskIds=tasks.filter(t=>t.sectionId===s.id).map(t=>t.id);
+    const ms=sessions.filter(x=>sTaskIds.includes(x.taskId)).reduce((a,x)=>a+x.focusMs,0);
+    const pct=Math.round(ms/maxMs*100);
+    return `<div class="section-bar"><div class="section-bar-label">${s.icon||''} ${s.name}</div><div style="flex:1;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden"><div class="section-bar-fill" style="width:${pct}%;background:linear-gradient(90deg,${s.color},${s.color}88)"></div></div><div class="section-bar-time">${fmtH(ms)}</div></div>`;
+  }).join('');
+}
+
+// ---- STREAK ----
+function updateStreak(){
+  const sessions=DB.sessions();
+  const dates=[...new Set(sessions.map(s=>s.date))].sort().reverse();
+  let streak=0; const today=todayStr();
+  let check=today;
+  for(const d of dates){ if(d===check){ streak++; const prev=new Date(check); prev.setDate(prev.getDate()-1); check=prev.toISOString().slice(0,10); } else break; }
+  DB.set('streak',streak);
+  document.getElementById('streak-count').textContent=streak;
+  const rings=document.getElementById('streak-rings'); if(!rings) return;
+  rings.innerHTML=Array.from({length:Math.min(streak,14)},(_,i)=>`<div class="streak-ring filled">${i+1}</div>`).join('');
+}
+
+// ---- ACHIEVEMENTS ----
+function checkAchievements(){
+  const sessions=DB.sessions(); const streak=DB.get('streak')||0;
+  const unlocked=DB.get('achievements')||[];
+  let newUnlock=false;
+  ACHIEVEMENTS.forEach(a=>{
+    if(!unlocked.includes(a.id)&&a.condition(sessions,streak)){
+      unlocked.push(a.id);
+      toast(`🏅 Nový úspěch: ${a.name}!`,'success',5000);
+      AUDIO.playCelebration();
+      newUnlock=true;
+    }
+  });
+  if(newUnlock) DB.set('achievements',unlocked);
+}
+
+function renderAchievements(){
+  const unlocked=DB.get('achievements')||[];
+  const el=document.getElementById('achievements-list'); if(!el) return;
+  el.innerHTML=ACHIEVEMENTS.map(a=>`
+    <div class="achievement ${unlocked.includes(a.id)?'':'locked'}">
+      <div class="achievement-icon">${a.icon}</div>
+      <div class="achievement-info"><div class="achievement-name">${a.name}</div><div class="achievement-desc">${a.desc}</div></div>
+      ${unlocked.includes(a.id)?'<span style="color:var(--gold)">✓</span>':''}
+    </div>`).join('');
+}
+
+// ---- EVENING RITUAL ----
+let tomorrowEnergyVal=3;
+function selectTomorrowEnergy(v,el){ tomorrowEnergyVal=v; document.querySelectorAll('#modal-evening-ritual .mood-btn').forEach(b=>b.classList.remove('selected')); el.classList.add('selected'); }
+
+function saveEveningRitual(){
+  const mits=[ document.getElementById('mit-tomorrow-1').value.trim(), document.getElementById('mit-tomorrow-2').value.trim(), document.getElementById('mit-tomorrow-3').value.trim() ].filter(Boolean);
+  const ritual={ date:todayStr(), done:document.getElementById('evening-done').value, mits, energy:tomorrowEnergyVal };
+  const queue=DB.morning(); queue.push(ritual); DB.saveMorning(queue);
+  // Create MIT tasks for tomorrow
+  if(mits.length>0){
+    const tasks=DB.tasks();
+    mits.forEach(m=>{ if(!tasks.find(t=>t.title===m&&!t.done)){ tasks.push({id:uid(),title:m,sectionId:'',note:'MIT z večerního rituálu',quad:1,workType:'deep',isMIT:true,estimate:0,profile:APP.profile,date:todayStr(),totalMs:0,sessions:0,done:false}); } });
+    DB.saveTasks(tasks);
+  }
+  closeModal('modal-evening-ritual');
+  toast('🌙 Večerní rituál dokončen. Dobrou noc!','success',4000);
+  renderMorningQueue(); renderTasks();
+}
+
+function renderMorningQueue(){
+  const queue=DB.morning();
+  const el=document.getElementById('morning-queue'); if(!el) return;
+  const latest=queue[queue.length-1];
+  if(!latest||!latest.mits||latest.mits.length===0){ el.innerHTML='<div style="font-size:13px;color:var(--text-dim)">Žádné úkoly připraveny. Dnes večer proveď večerní rituál.</div>'; return; }
+  el.innerHTML=`<div style="font-size:12px;color:var(--text-dim);margin-bottom:8px">Připraveno: ${latest.date}</div>`+latest.mits.map((m,i)=>`
+    <div class="task-card" style="cursor:default">
+      <div style="font-size:13px;color:var(--text-dim);margin-bottom:2px">MIT ${i+1}</div>
+      <div class="task-title">${m}</div>
+    </div>`).join('');
+}
+
+// ---- EXPORT ----
+function exportXLS(filterOpts={}){
+  const sessions=DB.sessions();
+  const tasks=DB.tasks();
+  const secs=DB.sections();
+
+  let filteredSess=sessions;
+  if(filterOpts.profile&&filterOpts.profile!=='all'){
+    if(filterOpts.profile==='company') filteredSess=filteredSess.filter(s=>s.profile==='work'||s.profile==='overtime');
+    else filteredSess=filteredSess.filter(s=>s.profile===filterOpts.profile);
+  }
+  if(filterOpts.section&&filterOpts.section!=='all'){
+    const tIds=tasks.filter(t=>t.sectionId===filterOpts.section).map(t=>t.id);
+    filteredSess=filteredSess.filter(s=>tIds.includes(s.taskId));
+  }
+  if(filterOpts.from) filteredSess=filteredSess.filter(s=>s.date>=filterOpts.from);
+  if(filterOpts.to) filteredSess=filteredSess.filter(s=>s.date<=filterOpts.to);
+
+  const rows=[['Datum','Profil','Sekce','Úkol','Poznámka','Začátek','Konec','Čas soustředění (min)','Čas přestávek (min)','Celkový čas (min)','Vyrušení','Nálada','Bloky']];
+  filteredSess.forEach(s=>{
+    const t=tasks.find(x=>x.id===s.taskId)||{title:'?',sectionId:'',note:''};
+    const sec=secs.find(x=>x.id===t.sectionId);
+    const start=s.startTs?new Date(s.startTs).toLocaleTimeString('cs-CZ',{hour:'2-digit',minute:'2-digit'}):'';
+    const end=s.endTs?new Date(s.endTs).toLocaleTimeString('cs-CZ',{hour:'2-digit',minute:'2-digit'}):'';
+    const profName={work:'Práce',overtime:'Přesčas',personal:'Osobní'}[s.profile]||s.profile;
+    rows.push([s.date,profName,sec?sec.name:'',t.title,t.note||'',start,end,Math.round(s.focusMs/60000),Math.round(s.breakMs/60000),Math.round((s.focusMs+s.breakMs)/60000),s.distractions,s.mood||'',s.blocks||0]);
+  });
+
+  // Build CSV (fallback if no SheetJS)
+  const csv=rows.map(r=>r.map(c=>'"'+(String(c).replace(/"/g,'""'))+'"').join(',')).join('\n');
+  const BOM='﻿';
+  const blob=new Blob([BOM+csv],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=`focusflow_export_${todayStr()}.csv`; a.click();
+  URL.revokeObjectURL(url);
+  toast('📊 Export dokončen (CSV – otevři v Excelu)','success');
+}
+
+function exportFilteredXLS(){
+  exportXLS({
+    profile:document.getElementById('exp-profile').value,
+    section:document.getElementById('exp-section').value,
+    from:document.getElementById('exp-from').value,
+    to:document.getElementById('exp-to').value
+  });
+  closeModal('modal-export-filter');
+}
+
+function exportJSON(){
+  const data={ tasks:DB.tasks(), sessions:DB.sessions(), sections:DB.sections(), settings:S, caffeine:DB.caffeine(), morning:DB.morning(), achievements:DB.get('achievements')||[], streak:DB.get('streak')||0, exportDate:new Date().toISOString() };
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=`focusflow_backup_${todayStr()}.json`; a.click();
+  URL.revokeObjectURL(url);
+  toast('💾 Záloha exportována','success');
+}
+
+function importJSON(){ document.getElementById('import-file').click(); }
+function handleImport(e){
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const data=JSON.parse(ev.target.result);
+      if(data.tasks) DB.saveTasks(data.tasks);
+      if(data.sessions) DB.saveSessions(data.sessions);
+      if(data.sections) DB.saveSections(data.sections);
+      if(data.settings) { DB.saveSettings(data.settings); S=data.settings; loadSettings(); }
+      if(data.caffeine) DB.saveCaffeine(data.caffeine);
+      if(data.morning) DB.saveMorning(data.morning);
+      if(data.achievements) DB.set('achievements',data.achievements);
+      if(data.streak) DB.set('streak',data.streak);
+      init();
+      toast('✅ Záloha importována úspěšně!','success');
+    }catch(err){ toast('❌ Chyba při importu – neplatný soubor','warning'); }
+  };
+  reader.readAsText(file);
+  e.target.value='';
+}
+
+// ---- MODALS ----
+function openModal(id){
+  document.getElementById(id).classList.add('active');
+  if(id==='modal-new-task'){
+    renderSectionSelect('task-section-input');
+    const dd=document.getElementById('task-due-date');
+    if(dd&&!dd.value) dd.value=todayStr();
+    setTimeout(()=>{ const ni=document.getElementById('task-name-input'); if(ni) ni.focus(); },100);
+  }
+  if(id==='modal-export-filter'){ renderSectionSelect('exp-section'); const today=todayStr(); const month=new Date(); month.setDate(1); document.getElementById('exp-from').value=month.toISOString().slice(0,10); document.getElementById('exp-to').value=today; }
+}
+function closeModal(id){ document.getElementById(id).classList.remove('active'); }
+document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{ if(e.target===m) m.classList.remove('active'); }));
+
+// ---- TABS ----
+function switchTab(name){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  if(name==='stats'){ renderStats(); }
+  if(name==='tasks'){ renderTasks(); renderDiary(); }
+  if(name==='plan'){ renderMorningQueue(); renderTimeboxTaskSelect(); }
+}
+
+function renderTimeboxTaskSelect(){
+  const el=document.getElementById('timebox-task-select'); if(!el) return;
+  const tasks=DB.tasks().filter(t=>!t.done);
+  el.innerHTML='<option value="">Vyber úkol...</option>'+tasks.map(t=>`<option value="${t.id}">${t.title}</option>`).join('');
+}
+
+// ---- TEMA (světlý / tmavý) ----
+function toggleTheme(){
+  const isLight=document.body.classList.toggle('light');
+  document.getElementById('theme-btn').textContent=isLight?'🌙':'☀️';
+  DB.set('theme', isLight?'light':'dark');
+  // Oprav barvy orbu pro světlý režim
+  updateOrbColors();
+}
+function loadTheme(){
+  const t=DB.get('theme');
+  if(t==='light'){
+    document.body.classList.add('light');
+    const btn=document.getElementById('theme-btn');
+    if(btn) btn.textContent='🌙';
+  }
+}
+
+// ---- IMMERSIVE ----
+function toggleImmersive(){
+  APP.immersive=!APP.immersive;
+  document.getElementById('immersive').classList.toggle('active',APP.immersive);
+}
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') { if(APP.immersive) toggleImmersive(); if(APP.quickMode) toggleQuickMode(); } if(e.key===' '&&!e.target.matches('input,textarea')) { e.preventDefault(); APP.timerMode==='idle'?startTimerFlow():pauseTimer(); } if((e.key==='v'||e.key==='V')&&!e.target.matches('input,textarea')) logDistraction(); });
+
+// ---- REMINDERS ----
+let reminderCheckInterval=null;
+function setupReminders(){
+  clearInterval(reminderCheckInterval);
+  if(!('Notification' in window)) return;
+  Notification.requestPermission();
+  reminderCheckInterval=setInterval(()=>{
+    const now=new Date();
+    const timeStr=`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+    if(timeStr===S.eveningTime) showEveningReminder();
+    if(timeStr===S.morningTime) showMorningReminder();
+  },30000);
+}
+
+function showEveningReminder(){
+  if(Notification.permission==='granted') new Notification('🌙 FocusFlow – Večerní rituál',{body:'Čas zapsat co jsi dnes zvládl a připravit zítřek!',icon:''});
+  toast('🌙 Čas na večerní rituál – připrav si zítřek!','info',8000);
+}
+function showMorningReminder(){
+  const q=DB.morning(); const latest=q[q.length-1];
+  if(latest&&latest.mits&&latest.mits.length>0){
+    if(Notification.permission==='granted') new Notification('🌅 FocusFlow – Dobré ráno!',{body:`Máš ${latest.mits.length} MIT úkolů připraveny. Jdeme na to!`});
+    toast('🌅 Dobré ráno! Máš připravené MIT úkoly.','success',6000);
+  }
+}
+
+// ---- INIT ----
+function init(){
+  loadSettings();
+  ORB.init();
+  updateNightOwl();
+  setProfile(APP.profile);
+  selectMood(3);
+  renderSectionsList();
+  renderSectionSelect('task-section-input');
+  renderSectionSelect('exp-section');
+  renderQmSections();
+  renderSectionFilterChips();
+  renderTasks();
+  renderStats();
+  renderMorningQueue();
+  updateTimerDisplay();
+  updateTimerButtons();
+  loadTheme();
+  setupReminders();
+  // Night owl check every minute
+  setInterval(updateNightOwl, 60000);
+  // Check if morning queue available
+  const q=DB.morning(); const latest=q[q.length-1];
+  if(latest&&latest.mits&&latest.mits.length>0&&latest.date===todayStr()){
+    setTimeout(()=>toast('🌅 Máš '+latest.mits.length+' MIT úkoly připravené na dnes!','info',5000),2000);
+  }
+  // Check overtime on load
+  checkOvertimeOffer();
+  console.log('FocusFlow initialized');
+}
+
+window.addEventListener('DOMContentLoaded', init);
+
+// ---- PWA SERVICE WORKER ----
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(r => console.log('SW registered:', r.scope))
+      .catch(e => console.log('SW error:', e));
+  });
+}
+</script>
+</body>
+</html>

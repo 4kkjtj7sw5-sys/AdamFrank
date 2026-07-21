@@ -1,0 +1,28 @@
+{
+  "name": "FocusFlow – Profesionální soustředění",
+  "short_name": "FocusFlow",
+  "description": "Vědecky podložená aplikace pro maximální soustředění a produktivitu",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0a0a1a",
+  "theme_color": "#4a9eff",
+  "lang": "cs",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "utilities"],
+  "screenshots": []
+}
